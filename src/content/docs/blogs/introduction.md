@@ -1,27 +1,59 @@
 ---
-title: 'My First Blog Post'
-pubDate: 2022-07-01
-description: 'This is the first post of my new Astro blog.'
-author: 'Astro Learner'
+title: "Dangers of Custom React Hooks"
+pubDate: 2025-08-11
+author: "Zhi Jie"
 image:
-    url: 'https://docs.astro.build/assets/rose.webp'
-    alt: 'The Astro logo on a dark background with a pink glow.'
-tags: ["astro", "blogging", "learning in public"]
+  url: "https://docs.astro.build/assets/rose.webp"
+  alt: "The Astro logo on a dark background with a pink glow."
+tags: ["react"]
 ---
-# My First Blog Post
 
-Published on: 2022-07-01
+## Introduction
 
-Welcome to my _new blog_ about learning Astro! Here, I will share my learning journey as I build a new website.
+Custom hooks are great of reusability and all, but if not careful, it may accidentally abstracts away some of the state in your component causing unnecesary re-renders.
 
-## What I've accomplished
+For example, we can have a custom hook for opening a modal as shown below
 
-1. **Installing Astro**: First, I created a new Astro project and set up my online accounts.
+```tsx
+// Hook
+const useModalState = () => {
+  const [isOpen, setIsopen] = useState(false);
 
-2. **Making Pages**: I then learned how to make pages by creating new `.astro` files and placing them in the `src/pages/` folder.
+  // Internal state in the hook
+  // If state changes here, the `App` component will also re-render!
+  const [width, setWidth] = useState(0);
 
-3. **Making Blog Posts**: This is my first blog post! I now have Astro pages and Markdown posts!
+  useEffect(() => {
+    const listener = () => {
+      setWidth(window.innerWidth);
+    };
 
-## What's next
+    window.addEventListener("resize", listener);
 
-I will finish the Astro tutorial, and then keep adding more posts. Watch this space for more to come.
+    return () => window.removeEventListener("resize", listener);
+  }, []);
+
+  return {
+    isOpen,
+    open: () => setIsOpen(true),
+    close: () => setIsOpen(false),
+  };
+};
+
+const App = () => {
+  const { isOpen, toggle } = useModalState(); // we cant directly see the state anymore
+
+  return (
+    <div>
+      <Button onClick={toggle}>Open modal</Button>
+      {isOpen ? <HeavyModal onClose={toggle} /> : null}
+      <HeavyComponent1 />
+      <HeavyComponent2 />
+    </div>
+  );
+};
+```
+
+Looking into the custom hook `useModalState`, we have an internal state `width`. When `width` changes, it will cause a re-render in the `App` component. And since `App` re-renders, the children of `App` which are `HeavyComponent1` and `HeavyComponent2` will also re-render!
+
+An attempt to move state from a component into its on hook will just make it invisible.
