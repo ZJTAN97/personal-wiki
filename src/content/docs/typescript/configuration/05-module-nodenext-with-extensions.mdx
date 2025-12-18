@@ -2,3 +2,76 @@
 title: Module NodeNext with Extensions
 ---
 
+The extensions here refer to the two kinds of file extensions we can use with TypeScript
+
+- `.cts`: outputs CommonJS code
+- `.mts`: outputs ESModule code
+
+When using `tsc` to transpile your code, the `"module": "NodeNext"` option should be used.
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+// implies: "moduleResolution": "NodeNext"
+  ...
+  }
+}
+```
+
+## CommonJS
+
+Inside of `commonjs.cjs`, the `require` keyword is used for importing and exporting
+
+```js title="commonjs.cjs"
+exports.example = example;
+```
+
+Though the source of this file is inside of commonjs.cts using ESModules syntax
+
+```ts title="commonjs.cts"
+export const example = () => {
+  return "hello!";
+};
+```
+
+Even though ES Modules are used in the source, TypeScript outputs CommonJS. This is because the file extension is `.cts.`
+
+## ES Modules
+
+With the `.mts` extension, TypeScript understands this file should output ES Modules, whereas a file ending in .cts will outputs CommonJS.
+
+If we change "module" in our tsconfig.json file to "ESNext", both files are now forced to use ES Modules
+
+```json title="tsconfig.json"
+// inside tsconfig.json
+
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    ...
+  }
+}
+```
+
+## Depends on `package.json`
+
+```json title="package.json"
+// inside package.json
+
+{
+ ...
+ "type": "module"
+ ...
+}
+```
+
+This indicates that everything inside the folder with this package.json file should be treated as ES Modules. 
+Specifically, if Node encounters a .js file, it should treat it as ES Modules. TypeScript then outputs ES Module
+
+
+## Conclusion
+
+Using `"module: "nodeNext"` copies Node's semantics for extensions. 
+This means it checks package.json files for additional settings, then ensures that every file has the correct extension. 
+When dealing with .cjs and .mjs files, making sure the extension is really important. 

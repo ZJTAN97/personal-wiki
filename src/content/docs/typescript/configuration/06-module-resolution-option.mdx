@@ -1,0 +1,46 @@
+---
+title: The moduleResolution Option
+---
+
+## Module and Module moduleResolution
+
+The `module` setting in TypeScript specifies the kind of module code you want TypeScript to emit.
+
+The `moduleResolution` option determines how TypeScript should resolve imports throughout your application.
+
+## The only options that matter
+
+If you're transpiling your code with TypeScript, you should choose `module: NodeNext` and `moduleResolution: NodeNext`.
+
+If you're using another transpiler, you should choose `module: ESNext` and `moduleResolution: Bundler`.
+
+## The `NodeNext` Setting
+
+When setting module and moduleResolution both to "NodeNext", TypeScript will want you to add a .js extension to local file imports.
+
+```json title="tsconfig.json"
+// inside tsconfig.json
+"compilerOptions": {
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext"
+...
+}
+```
+
+This might seem strange as you're importing a .ts file, but it's because TypeScript targets the compiled JavaScript file, not the TypeScript source file. 
+TypeScript never wants to change runtime behavior by altering import paths, hence the need for a .js extension.
+
+## The `ESNext` and `Bundler` Settings
+
+This configuration is more flexible with extensions and is handled by the bundler.
+
+```json title="tsconfig.json"
+// inside tsconfig.json
+"compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "Bundler"
+  ...
+}
+```
+
+In general, if you're working on the front-end with a framework like Vite or Next.js, you'll likely want moduleResolution: Bundler.
