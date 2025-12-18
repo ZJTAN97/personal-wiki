@@ -26,16 +26,6 @@ export default defineConfig({
           autogenerate: { directory: "react" },
         },
         {
-          label: "Blog",
-          collapsed: true,
-          autogenerate: { directory: "blogs" },
-        },
-        {
-          label: "Data Structures & Algorithms",
-          collapsed: true,
-          autogenerate: { directory: "dsa" },
-        },
-        {
           label: "JavaScript",
           collapsed: true,
           autogenerate: { directory: "javascript" },
@@ -44,6 +34,11 @@ export default defineConfig({
           label: "TypeScript",
           collapsed: true,
           autogenerate: { directory: "typescript" },
+        },
+        {
+          label: "Data Structures & Algorithms",
+          collapsed: true,
+          autogenerate: { directory: "dsa" },
         },
       ],
     }),
