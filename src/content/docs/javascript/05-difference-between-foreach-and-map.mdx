@@ -1,0 +1,18 @@
+---
+title: Difference between .forEach and .map
+---
+
+## `forEach`
+
+- Iterates through the elements in an array
+- Executes a callback for each element.
+- Does not return a value
+
+## `map`
+
+- Iterates through the elements in an array
+- "Maps" each element to a new element by calling the function on each element, creating a new array as a result.
+
+- The main difference is that `.map()` returns a new array while `.forEach` does not (returns undefined)
+- If you simply need to iterate over an array, `forEach` is a fine choice
+- If you need the result but do not wish to mutate the original array, `.map()` is the clear choice.

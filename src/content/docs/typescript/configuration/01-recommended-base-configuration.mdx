@@ -1,0 +1,80 @@
+---
+title: Recommended Base Configuration
+---
+
+The tsconfig.json file is the core of how you configure TypeScript to do what you want it to do. At first glance, it might seem overwhelming,
+but it's really just a few key choices wrapped up in a bundle of compiler options.
+
+## Base options
+
+```json title="tsconfig.json"
+{
+  "skipLibCheck": true,
+  "target": "es2016",
+  "esModuleInterop": true,
+  "allowJs": true,
+  "resolveJsonModule": true,
+  "moduleDetection": "force",
+  "isolatedModules": true,
+  "verbatimModuleSyntax": true
+}
+```
+
+Here's a quick review of what each option does:
+
+- `skipLibCheck: true`: Disables type checking on .d.ts files, which is important.
+- `target`: Specifies the target JavaScript version to emit and produce.
+- `esModuleInterop: true`: Makes working with export default from CommonJS modules easier.
+- `allowJs: true`: Allows importing .js files.
+- `resolveJsonModule: true`: Allows importing .json files.
+- `moduleDetection: "force"`: Forces module detection.
+
+## Strictness Settings
+
+```json title="tsconfig.json"
+{
+  "strict": true,
+  "noUncheckedIndexedAccess": true,
+  "noImplicitOverride": true
+}
+```
+
+## Transpilation with TypeScript
+
+If you are transpiling with `tsc`, choose these three Settings
+
+```json title="tsconfig.json"
+{
+  "module": "NodeNext",
+  "outDir": "dist",
+  "sourceMap": true
+}
+```
+
+Here's what each option does:
+
+- `outDir: "dist"`: Tells TypeScript to put the transpiled JavaScript files in a folder called dist.
+- `sourceMap: true`: Generates source maps, which can be really useful when working with Node.
+- `module: "NodeNext"`: Emulates the behavior of Node when producing module code.
+
+## No Transpilation (when using other build tools like Vite etc)
+
+```json title="tsconfig.json"
+
+{
+  "module": "preserve",
+  "noEmit": true
+}
+
+```
+
+`noEmit: true` turns TypeScript into more of a linter. This means you can use TypeScript with an external bundler like esbuild, Next.js, Vite, Remix, or anything else. 
+If you're not using tsc, you should set these options.
+
+## DOM vs. Backend
+
+If your code runs in the DOM, include the DOM types: `dom` and `dom.iterable` in the lib array:
+
+```json title="tsconfig.json"
+"lib": ["es2022", "dom", "dom.iterable"]
+```

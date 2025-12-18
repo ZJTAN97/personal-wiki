@@ -1,0 +1,18 @@
+---
+title: Understanding Isolated Modules in TypeScript
+---
+
+The isolatedModules enables single file transpilation, which allows tools other than TypeScript to transpile your code. 
+It also indicates that you're operating in a module-based system.
+
+Setting isolatedModules to true in your tsconfig is a good practice because it improves code portability 
+between different systems and prevents unexpected behaviors, such as the one seen with declare.
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    ...
+    "isolatedModules": true
+  }
+}
+```

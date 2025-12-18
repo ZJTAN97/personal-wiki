@@ -1,0 +1,39 @@
+---
+title: Synchronous vs Asynchronous JavaScript
+---
+
+<img src="https://user-images.githubusercontent.com/68308477/147720410-af6f4f23-e9cb-4f93-896d-955d5b8151db.png" width="450" height="300" />
+
+- JavaScript Functions are First-Class Citizens. you can create and modify a function, use it as an argument, return it
+from another function, and assign it to a variable.
+- We can classify most asynchronous JavaScript operations with two primary triggers:
+  1. Browser API/Web Api event or functions (`setTimeout`, `onclick` etc..)
+  2. Promises. unique JS object that allows us to perform asynchronous operations.
+
+### Synchronous JavaScript - How Function Execution Stack works
+- refer to AsyncSync.js for example.
+
+<img src="https://user-images.githubusercontent.com/68308477/147720719-b402107c-7ea1-4b6c-be1a-ace04e3d068f.png" width="450" height="350" />
+
+### How JavaScript Callback Queue works (aka Task Queue)
+<img src="https://user-images.githubusercontent.com/68308477/147720923-68922a3e-e143-44f3-a7ee-55fd68d2bb9a.png" width="350" height="280" />
+
+The famous `Event Loop`
+- The engine creates a `loop` to look into the queue periodically to find what it needs to pull from there.
+  1. It pulls a callback function from the queue to the call stack when the stack is empty.
+  2. When Browser API (async stuffs) occur, park the callback functions in a queue.
+  3. Keep executing code as usual in the stack.
+  4. The event loop checks if there is a callback function in the queue.
+  5. If so, pull callback function from the queue to the stack and execute.
+  6. continue loop.
+
+
+`Synchronous`
+
+Stops execution of further code until this is done.
+Because it this stoppage of further execution, synchronous code is called 'blocking'. Blocking in the sense that no other code will be executed.
+
+`Asynchronous` 
+
+Execution of this is deferred to the event loop, this is a construct in a JS virtual machine which executes asynchronous functions (after the stack of synchronous functions is empty).
+Asynchronous code is called non blocking because it doesn't block further code from running.

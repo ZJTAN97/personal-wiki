@@ -1,0 +1,19 @@
+---
+title: Using TypeScript as a Linter
+---
+
+The noEmit option is how we'll tell TypeScript to behave more like a linter. When set to true,
+this option prevents TypeScript from generating JavaScript output files when you run tsc:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "noEmit": true
+  }
+}
+```
+
+By setting noEmit to true, you prevent TypeScript from generating unnecessary JavaScript files, while still benefiting from TypeScript's type checking.
+
+It's also worth noting that the noEmit option makes certain other settings in the tsconfig.json redundant.
+For instance, the outDir option, which specifies the output directory for the emitted JavaScript files, becomes meaningless when noEmit is set to true.

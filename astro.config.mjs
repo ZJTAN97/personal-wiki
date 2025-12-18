@@ -2,13 +2,14 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightAutoSidebar from "starlight-auto-sidebar";
+import starlightThemeNext from "starlight-theme-next";
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
       favicon: "./public/favicon.ico",
-      plugins: [starlightAutoSidebar()],
+      plugins: [starlightAutoSidebar(), starlightThemeNext()],
       customCss: ["./src/styles/logo.css"],
       title: "",
       logo: {
@@ -28,6 +29,21 @@ export default defineConfig({
           label: "Blog",
           collapsed: true,
           autogenerate: { directory: "blogs" },
+        },
+        {
+          label: "Data Structures & Algorithms",
+          collapsed: true,
+          autogenerate: { directory: "dsa" },
+        },
+        {
+          label: "JavaScript",
+          collapsed: true,
+          autogenerate: { directory: "javascript" },
+        },
+        {
+          label: "TypeScript",
+          collapsed: true,
+          autogenerate: { directory: "typescript" },
         },
       ],
     }),

@@ -1,0 +1,16 @@
+---
+title: Index Access Setting
+---
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    ...
+    "noUncheckedIndexedAccess": true
+  }
+}
+```
+
+With this flag enabled, TypeScript will warn us that mightNotExist could be undefined, prompting us to handle this case in our code.
+
+This safety check isn't just limited to arrays. It also applies to object properties, helping you avoid trying to access a property that may not exist.
