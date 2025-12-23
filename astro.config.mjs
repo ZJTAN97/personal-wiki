@@ -26,6 +26,11 @@ export default defineConfig({
           autogenerate: { directory: "react" },
         },
         {
+          label: "HTML",
+          collapsed: true,
+          autogenerate: { directory: "html" },
+        },
+        {
           label: "JavaScript",
           collapsed: true,
           autogenerate: { directory: "javascript" },

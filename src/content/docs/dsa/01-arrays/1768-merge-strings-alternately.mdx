@@ -1,0 +1,60 @@
+---
+title: Merge Strings Alternately
+---
+
+## My Solution
+
+```ts
+function mergeAlternately(word1: string, word2: string): string {
+  let output = "";
+
+  if (word1.length >= word2.length) {
+    for (let i = 0; i < word1.length; i++) {
+      output += word1.charAt(i);
+
+      if (word2.charAt(i)) {
+        output += word2.charAt(i);
+      }
+    }
+  } else {
+    for (let i = 0; i < word2.length; i++) {
+      if (word1.charAt(i)) {
+        output += word1.charAt(i);
+      }
+
+      output += word2.charAt(i);
+    }
+  }
+
+  return output;
+}
+
+console.log(mergeAlternately("abc", "pqr"));
+console.log(mergeAlternately("ab", "pqrs"));
+console.log(mergeAlternately("abcd", "pq"));
+```
+
+## Alternate Solution
+
+```ts
+function mergeAlternately(word1: string, word2: string): string {
+  let output = "";
+
+  // Using 2 pointers
+  let i = 0;
+  let j = 0;
+
+  while (i < word1.length && j < word2.length) {
+    output += word1.charAt(i);
+    output += word2.charAt(i);
+
+    i++;
+    j++;
+  }
+
+  output += word1.slice(i, word1.length);
+  output += word2.slice(i, word2.length);
+
+  return output;
+}
+```

@@ -1,0 +1,45 @@
+---
+title: <base>
+---
+
+## Overview
+
+The `<base>` element specifies the base URL to use for all relative URLS in a document.
+
+There can only be one `<base>` element in a document.
+
+A document's used base URL can be accessed by scripts with Node.baseURI. If the document has no `<base>` elements,
+then baseURI defaults to location.href.
+
+:::danger
+Warning: A `<base>` element must have an href attribute, a target attribute, or both. 
+If at least one of these attributes are specified, 
+the `<base>` element must come before other elements with attribute values that are URLs, such as a `<link>`'s href attribute.
+:::
+
+## Why would we use it?
+
+The `<base>` tag specifies a default base URL or target for all relative URLs in an HTML document. 
+It’s typically placed in the `<head>` section and applies to elements like `<a>`, `<img>`, `<script>`, and `<link>` that use relative paths. 
+Think of it as a way to avoid repeating the same domain or folder path across your codebase.
+
+```html title="example.html"
+<head>
+  <base href="https://example.com/blog/">
+</head>
+<body>
+  <a href="article.html">Read Article</a> <!-- Resolves to https://example.com/blog/article.html -->
+  <img src="cover.jpg" alt="Cover"> <!-- Resolves to https://example.com/blog/cover.jpg -->
+</body>
+```
+
+Useful for the following scenarios
+
+- Simplify Relative URLs: Instead of writing https://example.com/assets/images/photo.jpg, you can use photo.jpg and let `<base>` handle the rest.
+- Ease Migrations: Moving a site to a new domain? Update the `<base>` tag instead of rewriting every link.
+- Consistency: Ensure all relative links resolve correctly, even in deeply nested folders.
+
+## What happens if `<base>` is missing?
+
+If no `<base>` tag is present, relative URLs resolve against the document’s current URL, accessible via location.href in the browser. 
+Scripts can also check the base URL using Node.baseURI, which defaults to location.href when `<base>` is absent.
