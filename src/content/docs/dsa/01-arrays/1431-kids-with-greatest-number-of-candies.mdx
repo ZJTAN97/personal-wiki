@@ -1,0 +1,20 @@
+---
+title: Kids with Greatest Number of Candies
+---
+
+```ts
+function kidsWithCandies(candies: number[], extraCandies: number): boolean[] {
+  const currentMax = Math.max(...candies);
+
+  const output: boolean[] = [];
+  for (const candy of candies) {
+    if (candy + extraCandies >= currentMax) {
+      output.push(true);
+    } else {
+      output.push(false);
+    }
+  }
+
+  return output;
+}
+```

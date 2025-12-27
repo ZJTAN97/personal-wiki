@@ -3,13 +3,18 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightAutoSidebar from "starlight-auto-sidebar";
 import starlightThemeNext from "starlight-theme-next";
+import starlightImageZoom from "starlight-image-zoom";
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
       favicon: "./public/favicon.ico",
-      plugins: [starlightAutoSidebar(), starlightThemeNext()],
+      plugins: [
+        starlightAutoSidebar(),
+        starlightThemeNext(),
+        starlightImageZoom(),
+      ],
       customCss: ["./src/styles/logo.css"],
       title: "",
       logo: {
@@ -29,6 +34,11 @@ export default defineConfig({
           label: "HTML",
           collapsed: true,
           autogenerate: { directory: "html" },
+        },
+        {
+          label: "CSS",
+          collapsed: true,
+          autogenerate: { directory: "css" },
         },
         {
           label: "JavaScript",
