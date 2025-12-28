@@ -1,0 +1,40 @@
+---
+title: Reverse Vowels of a String
+---
+
+## Widely Accepted Solution
+
+Uses two pointers
+
+## My Solution
+
+```ts
+function reverseVowels(s: string): string {
+  let output = s;
+
+  const vowels = ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"];
+
+  let retrievedVowelsHashMap: Record<string, string> = {};
+
+  for (let charIndex = 0; charIndex < s.length; charIndex++) {
+    if (vowels.includes(s[charIndex])) {
+      retrievedVowelsHashMap[charIndex] = s[charIndex];
+    }
+  }
+
+  const keys = Object.keys(retrievedVowelsHashMap);
+  const values = Object.values(retrievedVowelsHashMap).reverse();
+
+  for (let vowelIndex = 0; vowelIndex < keys.length; vowelIndex++) {
+    output =
+      output.substring(0, Number(keys[vowelIndex])) +
+      values[Number(vowelIndex)] +
+      output.substring(Number(keys[vowelIndex]) + 1);
+  }
+
+  return output;
+}
+
+console.log(reverseVowels("IceCreAm"));
+console.log(reverseVowels("leetcode"));
+```
