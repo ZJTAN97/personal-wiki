@@ -1,0 +1,41 @@
+---
+title: Maximum Depth of Binary Tree
+---
+
+## Soution
+
+```ts
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
+
+function maxDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+
+  let leftSubTree = maxDepth(root.left);
+  let rightSubTree = maxDepth(root.right);
+
+  return 1 + Math.max(leftSubTree, rightSubTree);
+}
+
+const treeNode3 = new TreeNode(3);
+const treeNode9 = new TreeNode(9);
+const treeNode20 = new TreeNode(20);
+const treeNode15 = new TreeNode(15);
+const treeNode7 = new TreeNode(7);
+
+treeNode3.left = treeNode9;
+treeNode3.right = treeNode20;
+treeNode20.left = treeNode15;
+treeNode20.right = treeNode7;
+
+console.log(maxDepth(treeNode3));
+```
