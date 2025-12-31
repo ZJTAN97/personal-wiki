@@ -1,0 +1,38 @@
+---
+title: Search in a Binary Search Tree
+---
+
+## Solution
+
+```ts
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
+
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (!root) return null;
+  if (root.val === val) return root;
+  return searchBST(root.left, val) || searchBST(root.right, val);
+}
+
+const treeNode4 = new TreeNode(4);
+const treeNode2 = new TreeNode(2);
+const treeNode7 = new TreeNode(7);
+const treeNode1 = new TreeNode(1);
+const treeNode3 = new TreeNode(3);
+
+treeNode4.left = treeNode2;
+treeNode4.right = treeNode7;
+treeNode2.left = treeNode1;
+treeNode2.right = treeNode3;
+
+console.log(searchBST(treeNode4, 2));
+```

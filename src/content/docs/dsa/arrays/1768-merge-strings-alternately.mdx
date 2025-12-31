@@ -2,6 +2,43 @@
 title: Merge Strings Alternately
 ---
 
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="EASY" variant="success" />
+
+Problem description can be found [here](https://leetcode.com/problems/merge-strings-alternately/description/).
+
+## Approach
+
+Leveraging on two pointers.
+
+## Solution
+
+```ts
+function mergeAlternately(word1: string, word2: string): string {
+  let output = "";
+
+  // Using 2 pointers
+  let i = 0;
+  let j = 0;
+
+  while (i < word1.length && j < word2.length) {
+    output += word1.charAt(i);
+    output += word2.charAt(i);
+
+    i++;
+    j++;
+  }
+
+  output += word1.slice(i, word1.length);
+  output += word2.slice(i, word2.length);
+
+  return output;
+}
+```
+
+
+
 ## My Solution
 
 ```ts
@@ -34,27 +71,3 @@ console.log(mergeAlternately("ab", "pqrs"));
 console.log(mergeAlternately("abcd", "pq"));
 ```
 
-## Alternate Solution
-
-```ts
-function mergeAlternately(word1: string, word2: string): string {
-  let output = "";
-
-  // Using 2 pointers
-  let i = 0;
-  let j = 0;
-
-  while (i < word1.length && j < word2.length) {
-    output += word1.charAt(i);
-    output += word2.charAt(i);
-
-    i++;
-    j++;
-  }
-
-  output += word1.slice(i, word1.length);
-  output += word2.slice(i, word2.length);
-
-  return output;
-}
-```

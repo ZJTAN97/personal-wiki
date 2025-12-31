@@ -1,0 +1,38 @@
+---
+title: Two Sum
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="EASY" variant="success" />
+
+
+Problem description can be found [here](https://leetcode.com/problems/two-sum/).
+
+## Approach
+
+Basically use a HashMap. The key is to store the difference from each number in the array from the target.
+
+If the difference exist, we basically found our solution.
+
+## Solution
+
+```ts
+function twoSum(nums: number[], target: number): number[] {
+  const hash: Record<number, number> = {};
+  const output: number[] = [];
+
+  for (let i = 0; i < nums.length; i++) {
+    const difference = target - nums[i];
+
+    if (difference in hash) {
+      output.push(i);
+      output.push(hash[difference]);
+    }
+
+    hash[nums[i]] = i;
+  }
+
+  return output;
+}
+```

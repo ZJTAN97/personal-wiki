@@ -1,0 +1,29 @@
+---
+title: Reverse Words in a String
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/reverse-words-in-a-string/description/).
+
+## Approach
+
+Don't think there is any key learning concepts other than knowing your javascript string methods.
+
+## Solution
+
+```ts
+function reverseWords(s: string): string {
+  return s
+    .split(" ")
+    .filter((word) => word !== "")
+    .reverse()
+    .join(" ");
+}
+
+reverseWords("the sky is blue"); // blue is sky the
+reverseWords("  hello world  "); // world hello
+reverseWords("a good  example"); // example good a
+```

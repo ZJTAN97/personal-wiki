@@ -1,40 +1,11 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
-    this.val = val === undefined ? 0 : val;
-    this.left = left === undefined ? null : left;
-    this.right = right === undefined ? null : right;
-  }
+function reverseWords(s: string): string {
+  return s
+    .split(" ")
+    .filter((word) => word !== "")
+    .reverse()
+    .join(" ");
 }
 
-function leafSimilar(root1: TreeNode | null, root2: TreeNode | null): boolean {
-  const dfs = (root: TreeNode | null): number[] => {
-    if (root === null) {
-      return [];
-    }
-    const leaves = dfs(root.left).concat(dfs(root.right));
-
-    return leaves.length > 0 ? leaves : [root.val];
-  };
-
-  return JSON.stringify(dfs(root1)) === JSON.stringify(dfs(root2));
-}
-
-const treeNode11 = new TreeNode(1);
-const treeNode12 = new TreeNode(2);
-const treeNode13 = new TreeNode(3);
-
-const treeNode21 = new TreeNode(1);
-const treeNode22 = new TreeNode(2);
-const treeNode23 = new TreeNode(3);
-
-treeNode11.left = treeNode12;
-treeNode11.right = treeNode13;
-
-treeNode21.left = treeNode22;
-treeNode21.right = treeNode23;
-
-console.log(leafSimilar(treeNode11, treeNode21));
+reverseWords("the sky is blue");
+reverseWords("  hello world  ");
+reverseWords("a good  example");
