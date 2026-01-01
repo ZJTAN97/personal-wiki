@@ -1,0 +1,35 @@
+---
+title: 283. Move Zeroes
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="EASY" variant="success" />
+
+Problem description can be found [here](https://leetcode.com/problems/move-zeroes/description/).
+
+## Approach
+
+Using two pointers, the right pointer constantly moves (as part of the for-loop index iteration).
+The left pointer only increases when the current right pointer value is not zero.
+
+Remember to think of the swap as just values swapping, not the pointers swapping!
+
+## Solution
+
+```ts
+function moveZeroes(nums: number[]): void {
+  let leftPointer = 0;
+  let temp: number;
+
+  for (let rightPointer = 0; rightPointer < nums.length; rightPointer++) {
+    if (nums[rightPointer] !== 0) {
+      temp = nums[leftPointer];
+      nums[leftPointer] = nums[rightPointer];
+      nums[rightPointer] = temp;
+
+      leftPointer++;
+    }
+  }
+}
+```
