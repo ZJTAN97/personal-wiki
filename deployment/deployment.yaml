@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: zhijietan97/docs:<TAG>
+          image: zhijietan97/personal-wiki:<TAG>
           imagePullPolicy: Always
           ports:
             - containerPort: 80

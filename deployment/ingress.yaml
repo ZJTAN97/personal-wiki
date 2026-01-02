@@ -19,7 +19,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: docs-service
+                name: personal-wiki-service
                 port:
                   number: 80
 
