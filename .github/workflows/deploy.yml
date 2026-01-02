@@ -1,0 +1,72 @@
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./docs
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "24"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.23.x
+
+      - name: Install
+        run: |
+          pnpm install --no-frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm --filter docs build
+
+      - name: Set short git commit SHA id
+        if: github.ref == 'refs/heads/main'
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+          cd deployment
+          sed -i "s/<TAG>/$calculatedSha/g" deployment.yaml
+          cat deployment.yaml
+
+      - name: Docker
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker build -t docs:latest .
+          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
+          docker tag docs:latest wandernotes/docs:${{ env.COMMIT_SHORT_SHA }} && docker push wandernotes/docs:${{ env.COMMIT_SHORT_SHA }}
+
+      - name: Apply changes
+        if: github.ref == 'refs/heads/main'
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
+        with:
+          args: |
+            apply -f docs/deployment
+        
+      - name: Rollout restart
+        if: github.ref == 'refs/heads/main'
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
+        with:
+          args: |
+            rollout restart deployment/docs

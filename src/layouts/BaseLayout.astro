@@ -1,0 +1,22 @@
+---
+import "@/styles/global.css";
+
+const SITE_TITLE = "Zhi Jie";
+const SITE_DESCRIPTION =
+  "My Personal Site for Learning Dumps, Sharing & Portfolio";
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="description" content={description ?? SITE_DESCRIPTION} />
+    <title>{title ?? SITE_TITLE}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

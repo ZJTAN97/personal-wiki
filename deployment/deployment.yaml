@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docs
-  namespace: wandernotes
+  namespace: personal
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: wandernotes/docs:latest
+          image: zhijietan97/docs:<TAG>
           imagePullPolicy: Always
           ports:
             - containerPort: 80

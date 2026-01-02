@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  namespace: wandernotes
+  namespace: personal
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
@@ -10,21 +10,8 @@ spec:
     - hosts:
         - zhijie.wiki
       secretName: zhijiewiki-tls
-    - hosts:
-        - wandernotes.wiki
-      secretName: wandernotes-tls
   ingressClassName: nginx
   rules:
-    - host: wandernotes.wiki
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: web-service
-                port:
-                  number: 80
     - host: zhijie.wiki
       http:
         paths:

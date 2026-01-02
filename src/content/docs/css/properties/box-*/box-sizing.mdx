@@ -1,3 +1,61 @@
 ---
 title: Box Sizing
 ---
+
+## Overview
+
+`content-box` gives you the default CSS box-sizing behavior. 
+If you set an element's width to 100 pixels, then the element's content box will be 100 pixels wide, 
+and the width of any border or padding will be added to the final rendered width, 
+making the element wider than 100px.
+
+`border-box` tells the browser to account for any border and padding in the values you specify for an element's width and height. 
+If you set an element's width to 100 pixels, that 100 pixels will include any border or padding you added, and the content box will shrink to absorb that extra width. 
+This typically makes it much easier to size elements.
+
+
+## Values
+
+### `content-box`
+
+Initial and default value specified by the CSS Standard.
+
+The `width` and `height` properties include the content, but does not include the
+padding, border or margin.
+
+For example, the following renders a box that is 370px wide.
+
+```css
+.box {
+  width: 350px;
+  border: 10px solid black;
+}
+```
+
+The dimensions of the element are calculated as:
+
+- width = `width` of the content
+- height = `height` of content
+
+Borders and paddings are not included in the calculation.
+
+### `border-box`
+
+The width and height properties include the content, padding and border but does not
+include the margin.
+
+For example the following renders a box that is 350px wide.
+The area for content being 330px wide.
+
+```css
+.box {
+  width: 350px;
+  border: 10px solid black;
+}
+```
+
+Here the dimensions of the element are calculated as:
+
+- width = border + padding + width of the content
+- height = border + padding + height of the content
+

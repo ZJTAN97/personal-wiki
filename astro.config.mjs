@@ -1,26 +1,21 @@
 // @ts-check
+import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightAutoSidebar from "starlight-auto-sidebar";
-import starlightThemeNext from "starlight-theme-next";
 import starlightImageZoom from "starlight-image-zoom";
+import tailwindcss from "@tailwindcss/vite";
 
-// https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
-      favicon: "./public/favicon.ico",
-      plugins: [
-        starlightAutoSidebar(),
-        starlightThemeNext(),
-        starlightImageZoom(),
-      ],
-      customCss: ["./src/styles/logo.css"],
-      title: "",
-      logo: {
-        src: "./src/assets/quby.png",
-        replacesTitle: true,
+      components: {
+        Sidebar: "./src/components/StarlightSidebar.astro",
       },
+      favicon: "./public/favicon.ico",
+      plugins: [starlightAutoSidebar(), starlightImageZoom()],
+      customCss: ["./src/styles/global.css"],
+      title: "Home",
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/ZJTAN97" },
       ],
@@ -51,11 +46,16 @@ export default defineConfig({
           autogenerate: { directory: "typescript" },
         },
         {
-          label: "Data Structures & Algorithms",
+          label: "DSA",
           collapsed: true,
           autogenerate: { directory: "dsa" },
         },
       ],
     }),
+    react(),
   ],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
