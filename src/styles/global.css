@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@import "tw-animate-css";

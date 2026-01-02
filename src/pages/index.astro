@@ -1,0 +1,70 @@
+---
+// import "../styles/index.css";
+import "../styles/global.css";
+import { motion } from "framer-motion";
+// import Hero from "@/components/Hero.astro";
+// import LandingButtonGroup from "@/components/LandingButtonGroup.astro";
+---
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<div class="gradient-background">
+  <header class="hidden md:flex justify-end px-8 py-6">
+    <div class="flex flex-row items-center gap-6 text-card-foreground">
+      <a href="/getting-started/01-about" class="text-white">Docs </a>
+      <!-- <a class={buttonVariants({ variant: "default", size: "sm" })} href="">
+        Application
+      </a> -->
+    </div>
+  </header>
+
+  <div
+    class="w-full flex-col items-start md:items-center justify-center flex relative z-10 px-10"
+  >
+    <motion.div
+      className="flex flex-row items-center justify-center mt-4 w-full"
+      initial={{ y: -20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+      client:load
+    />
+    <!-- <Hero /> -->
+    <!-- <LandingButtonGroup /> -->
+  </div>
+</div>
+
+<style>
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .gradient-background {
+    height: 100dvh;
+    overflow-y: auto;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(
+      60deg,
+      rgb(0, 0, 0),
+      rgb(3, 3, 37),
+      rgb(32, 1, 89)
+    );
+    background-size: 180% 180%;
+    animation: gradient-animation-dark 6s alternate-reverse infinite;
+  }
+
+  @keyframes gradient-animation-dark {
+    0% {
+      background-position: 0% 10%;
+    }
+    50% {
+      background-position: 100% 10%;
+    }
+    100% {
+      background-position: 0% 10%;
+    }
+  }
+</style>
