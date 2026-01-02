@@ -22,32 +22,32 @@ export default defineConfig({
       sidebar: [
         {
           label: "React",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "react" },
         },
         {
           label: "HTML",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "html" },
         },
         {
           label: "CSS",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "css" },
         },
         {
           label: "JavaScript",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "javascript" },
         },
         {
           label: "TypeScript",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "typescript" },
         },
         {
           label: "DSA",
-          collapsed: true,
+          collapsed: false,
           autogenerate: { directory: "dsa" },
         },
       ],

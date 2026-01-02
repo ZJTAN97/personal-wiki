@@ -6,7 +6,7 @@ on:
       - "**"
 
 jobs:
-  docs:
+  personal-wiki:
     runs-on: ubuntu-latest
 
     steps:
@@ -42,27 +42,27 @@ jobs:
           sed -i "s/<TAG>/$calculatedSha/g" deployment.yaml
           cat deployment.yaml
 
-      # - name: Docker
-      #   if: github.ref == 'refs/heads/main'
-      #   run: |
-      #     docker build -t docs:latest .
-      #     docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
-      #     docker tag docs:latest wandernotes/docs:${{ env.COMMIT_SHORT_SHA }} && docker push wandernotes/docs:${{ env.COMMIT_SHORT_SHA }}
+      - name: Docker
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker build -t personal-wiki:latest .
+          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
+          docker tag personal-wiki:latest zhijietan97/personal-wiki:${{ env.COMMIT_SHORT_SHA }} && docker push zhijietan97/personal-wiki:${{ env.COMMIT_SHORT_SHA }}
 
-      # - name: Apply changes
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: actions-hub/kubectl@master
-      #   env:
-      #     KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
-      #   with:
-      #     args: |
-      #       apply -f docs/deployment
+      - name: Apply changes
+        if: github.ref == 'refs/heads/main'
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
+        with:
+          args: |
+            apply -f deployment
         
-      # - name: Rollout restart
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: actions-hub/kubectl@master
-      #   env:
-      #     KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
-      #   with:
-      #     args: |
-      #       rollout restart deployment/docs
+      - name: Rollout restart
+        if: github.ref == 'refs/heads/main'
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
+        with:
+          args: |
+            rollout restart deployment/docs

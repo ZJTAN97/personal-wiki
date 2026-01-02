@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: docs
+  name: personal-wiki
   namespace: personal
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: docs
+      app: personal-wiki
   template:
     metadata:
       labels:
-        app: docs
+        app: personal-wiki
     spec:
       containers:
         - name: web
