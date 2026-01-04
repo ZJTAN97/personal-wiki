@@ -1,0 +1,50 @@
+---
+title: 334. Increasing Triplet Subsequence
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/product-of-array-except-self/description/).
+
+## Intuition
+
+For every element we must have its lower element on the left and the higher element on the right.
+
+Think of the problem like this, find the 2 smallest elements, and then an element that is greater than both of those.
+
+That doesn't sound like it meets our problem constraints, but the implementations protects us i'll explain how that is down below.
+
+Looking at the code, we initialize firstMin and secondMin to Infinity.
+We set firstMin when we encounter a value lesser than firstMin.
+We set secondMin when we encounter a value that is greater than firstMin but lesser than secondMin.
+This guaraentees as that, if secondMin is EVER set, it means that firstMin was already set, meaning that we have found a i < j && nums[i] < nums[j].
+When we hit the else, that mean firstMin < secondMin < num (which means nums[i] < nums[j] < nums[k]). And it also guaranetees i < j < k, because we just iterated to a later element and firstMin and secondMin we already set.
+
+## Solution
+
+```ts
+function increasingTriplet(nums: number[]): boolean {
+  let smaller = Number.MAX_SAFE_INTEGER;
+  let bigger = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < nums.length; i++) {
+    const current = nums[i];
+
+    if (current <= smaller) {
+      smaller = current;
+      continue;
+    }
+
+    if (current <= bigger) {
+      bigger = current;
+      continue;
+    }
+
+    return true;
+  }
+
+  return false;
+}
+```
