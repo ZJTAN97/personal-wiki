@@ -14,7 +14,6 @@ export default defineConfig({
       },
       favicon: "./public/favicon.ico",
       plugins: [starlightAutoSidebar(), starlightImageZoom()],
-      customCss: ["./src/styles/global.css"],
       title: "Home",
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/ZJTAN97" },
