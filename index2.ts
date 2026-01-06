@@ -15,3 +15,29 @@ console.log(fn(4));
  * fn(4) // 9
 
 */
+
+// Call function once
+
+type JSONValue =
+  | null
+  | boolean
+  | number
+  | string
+  | JSONValue[]
+  | { [key: string]: JSONValue };
+type OnceFn = (...args: JSONValue[]) => JSONValue | undefined;
+
+function once(fn: Function): OnceFn {
+  let counter = 0;
+
+  if (counter !== 0) {
+    return undefined;
+  }
+
+  return function (...args) {
+    counter++;
+    return args.reduce((a, b) => a + b);
+  };
+}
+
+once(() => []);
