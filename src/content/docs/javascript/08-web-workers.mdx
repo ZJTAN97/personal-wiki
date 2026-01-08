@@ -1,0 +1,33 @@
+---
+title: Web Workers
+---
+
+Web Workers are scripts that can run in the background.
+
+This is their primary purpose: to execute JavaScript code in a separate thread, away from the main thread that handles the user interface. 
+This allows for computationally intensive tasks to be performed without freezing or slowing down the user's interaction with the web page (developer.mozilla.org, wikipedia.org).
+
+
+## Key Statements and Capabilities
+
+Based on the provided search results, here are the true statements about Web Workers:
+
+- **Web Workers enable scripts to run in a background thread separate from the main execution thread of a web application.** This prevents computationally expensive tasks from blocking the main thread, keeping the application responsive ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), [codemag.com](https://www.codemag.com/Article/2101071/Understanding-and-Using-Web-Workers)).
+
+- **They cannot directly manipulate the DOM.** Web Workers operate in a separate context and do not have direct access to the browser's Document Object Model ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), [codemag.com](https://www.codemag.com/Article/2101071/Understanding-and-Using-Web-Workers), [loginradius.com](https://www.loginradius.com/blog/engineering/web-workers)).
+
+- **Communication between Web Workers and the main thread happens via messages.** This is typically done using the `postMessage()` method and responding to `message` events ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), [codemag.com](https://www.codemag.com/Article/2101071/Understanding-and-Using-Web-Workers), [loginradius.com](https://www.loginradius.com/blog/engineering/web-workers)).
+
+- **Data transferred between threads is copied, not shared directly.** This ensures that the threads remain isolated ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)).
+
+- There are **different types of Web Workers**, including dedicated workers, shared workers, and service workers ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Async_JS/Introducing_workers)).
+
+- **Workers can make network requests** using `fetch()` or `XMLHttpRequest` ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers)).
+
+- **JavaScript's built-in asynchronous features (like Promises) do not achieve true multi-threading.** While they handle asynchronous operations like I/O, computationally expensive tasks can still block the main thread. Web Workers provide true parallel execution for such tasks ([loginradius.com](https://www.loginradius.com/blog/engineering/web-workers)).
+
+- **They have limitations,** such as not being able to access `localStorage` or `sessionStorage` directly, and requiring careful management of error handling and complex workflows ([loginradius.com](https://www.loginradius.com/blog/engineering/web-workers)).
+
+- **Workers can spawn other workers,** provided they are hosted within the same origin ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)).
+
+- **Debugging Web Workers** can be done using browser developer tools, though the process might differ slightly from debugging regular scripts ([codemag.com](https://www.codemag.com/Article/2101071/Understanding-and-Using-Web-Workers)).
