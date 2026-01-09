@@ -81,9 +81,21 @@ You can preserve reference to a function with `useCallback`
 
 ## Prop change does not triggers a re-render
 
-:::danger
 A prop change does not re-render a component if the prop is stored as a local variable. it only re-renders when the prop is stored as a state variable.
-:::
+
+Instead, a re-render causes a change in props. It’s a subtle but vital distinction in how the React engine actually works.
+
+The "Direction" of CausalityMany developers think the flow is:
+
+Prop Changes --> Triggers Render
+
+In reality, the flow is:
+
+State Change --> Parent Renders --> New Prop Value Passed --> Child Renders
+
+Props are passive. They are just the "arguments" passed to a function. A function doesn't execute just because its arguments exist; it executes because someone called it. In React, only State and Context updates are the "callers."
+
+---
 
 ## Useful Resources
 
