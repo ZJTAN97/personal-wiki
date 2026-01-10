@@ -1,0 +1,35 @@
+---
+title: General Guide
+---
+
+## Definition
+
+A backtracking problem is a type of computational challenge that requires finding one or all solutions by systematically exploring a "state space" of potential candidates.
+
+## Template
+
+All backtracking problem can be broken down into 4 steps
+
+1. Base Case
+2. Choices
+3. Constraints
+4. Backtracking Step
+
+Pseudo Code Template (Commit to memory!)
+
+```ts
+function backtrack(params) {
+  if (baseCaseCondition) {
+    results.push(copyOfSolution);
+    return;
+  }
+
+  for (const choice of choices) {
+    if (violateConstraint) continue;
+
+    makeChoice();
+    backtrack(updatedParams);
+    undoChoice(); // Backtracking step
+  }
+}
+```
