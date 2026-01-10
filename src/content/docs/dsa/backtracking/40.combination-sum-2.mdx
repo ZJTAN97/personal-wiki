@@ -1,5 +1,21 @@
-function combinationSum2(candidates: number[], target: number): number[][] {
+---
+title: 40. Combination Sum 2
+---
 
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/combination-sum-ii/description/).
+
+## Approach
+
+Can follow a typical Backtracking problem template.
+
+## Solution
+
+```ts
+function combinationSum2(candidates: number[], target: number): number[][] {
   const result: number[][] = [];
 
   candidates = candidates.sort((a, b) => a - b);
@@ -27,9 +43,9 @@ function combinationSum2(candidates: number[], target: number): number[][] {
 
   backtrack(0, []);
 
-
   return result;
 }
 
 combinationSum2([10, 1, 2, 7, 6, 1, 5], 8);
 combinationSum2([2, 5, 2, 1, 2], 5);
+```
