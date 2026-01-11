@@ -1,0 +1,52 @@
+---
+title: 39. Combination Sum
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/combination-sum/description/).
+
+## Approach
+
+Can follow a typical Backtracking problem template.
+
+Somehow after doing a few backtracking problems, there are few things you can do to control the "decision making"
+and iterating through said "decision making".
+
+For this question's case since we are allowed to reuse variables, the backtracking step does not need to increase the index.
+
+## Solution
+
+```ts
+function combinationSum(candidates: number[], target: number): number[][] {
+  const result: number[][] = [];
+
+  function backtrack(index: number, path: number[]) {
+    const currentSum = path.reduce((a, b) => a + b, 0);
+
+    if (currentSum === target) {
+      result.push(path.slice());
+      return;
+    }
+
+    for (let i = index; i < candidates.length; i++) {
+      path.push(candidates[i]);
+
+      if (currentSum < target) {
+        backtrack(i, path);
+      }
+
+      path.pop();
+    }
+  }
+
+  backtrack(0, []);
+
+  return result;
+}
+
+combinationSum([2, 3, 6, 7], 7); // [ [2, 2, 3], [7] ]
+combinationSum([2, 3, 5], 8);
+```

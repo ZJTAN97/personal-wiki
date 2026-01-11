@@ -1,0 +1,55 @@
+---
+title: General Guide
+---
+
+## Definition
+
+A natural extension of Two Pointer patterns with a tighter focus, where you manage an array of values (i.e. your window).
+
+When problem asks about contiguous segments (substring, subarray, group of consecutive elements) its pretty much asking you to solve a sliding window problem.
+
+# Key attributes
+
+- Never revisit the same element twice. 
+  - this is what makes this algorithm an O(N) time complexity solution
+
+
+## Fixed Window Template
+
+```ts
+function slidingWindow(input, windowSize) {
+    
+    answer = window = input.reduce((a, b) => a + b, 0);
+
+    for(right of range(windowSize, input.length)) {
+        left = right - windowSize
+        remove left from window
+        add right to window
+        answer = max(answer, window)
+    }
+
+    return ans;
+}
+```
+
+## Dynamic Sliding Window Template
+
+```ts
+function slidingWindowFlexible(input) {
+    
+    initialize window and answer;
+
+    let left = 0;
+
+    for right in range(input.length) {
+        add right to window
+        while invalid(window):
+            remove left from window;
+            left += 1
+        answer = max(answer, window)
+    }
+
+    return answer;
+
+}
+```

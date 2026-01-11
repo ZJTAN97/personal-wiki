@@ -12,6 +12,16 @@ Problem description can be found [here](https://leetcode.com/problems/combinatio
 
 Can follow a typical Backtracking problem template.
 
+Conditions that are more specific to this question
+
+1. Need to sort the array first.
+
+2. if the next values is equals to the previous value, we will skip the loop.
+    - to achieve an effect of not making any decision down the tree
+
+
+3. Only recursively find more solutions when the sum has not exceed the target.
+
 ## Solution
 
 ```ts
@@ -21,6 +31,7 @@ function combinationSum2(candidates: number[], target: number): number[][] {
   candidates = candidates.sort((a, b) => a - b);
 
   function backtrack(index: number, path: number[]) {
+
     const sum = path.reduce((a, b) => a + b, 0);
 
     if (sum === target) {
@@ -29,6 +40,10 @@ function combinationSum2(candidates: number[], target: number): number[][] {
     }
 
     for (let i = index; i < candidates.length; i++) {
+
+      // To find out if there is repeated values
+      // in this example is there are two 1's
+      // need to include condition where they don't belong in same index to verify they are repeated values in the array
       if (i !== index && candidates[i] === candidates[i - 1]) continue;
 
       path.push(candidates[i]);

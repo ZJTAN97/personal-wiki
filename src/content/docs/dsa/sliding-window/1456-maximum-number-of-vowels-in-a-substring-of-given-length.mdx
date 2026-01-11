@@ -1,3 +1,20 @@
+---
+title: 1456. Maximum Number of Vowels in a Substring of Given Length
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/description/).
+
+## Approach
+
+Fixed Sliding Window
+
+## Solution
+
+```ts
 function maxVowels(s: string, k: number): number {
   const vowels = new Set(["a", "e", "i", "o", "u"]);
 
@@ -29,3 +46,4 @@ maxVowels("abciiidef", 3); // 3, "iii"
 maxVowels("aeiou", 2); // 2
 maxVowels("leetcode", 3); // 2, "lee", "eet", "ode"
 maxVowels("weallloveyou", 7); // 4
+```
