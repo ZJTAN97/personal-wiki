@@ -1,3 +1,20 @@
+---
+title: 1456. Maximum Number of Vowels in a Substring of Given Length
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/max-consecutive-ones-iii/description/).
+
+## Approach
+
+Dynamic Sliding Window
+
+## Solution
+
+```ts
 function longestOnes(nums: number[], k: number): number {
   let result = 0;
   let left = 0;
@@ -15,8 +32,14 @@ function longestOnes(nums: number[], k: number): number {
 
     result = Math.max(result, right - left + 1);
   }
-
+  
   return result;
 }
 
 longestOnes([1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0], 2); // 6 [1,1,1,0,0,1*,1,1,1,1,1*]
+```
+
+
+## Resources
+
+https://www.youtube.com/watch?v=HsGKI02yw6M

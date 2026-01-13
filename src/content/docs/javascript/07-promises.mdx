@@ -42,3 +42,50 @@ Promise.race([promise1, promise2]).then(function(value) {
   console.log(value); // "two" // Both promises will resolve, but promise2 is faster
 });
 ```
+
+## Promise.all
+
+`Promise.all()` is a powerful JavaScript method that allows you to handle multiple asynchronous operations concurrently. 
+It takes an iterable of promises and returns a single promise that fulfills when all of the input promises fulfill, or rejects if any of the input promises reject.
+
+Here's a breakdown of when `Promise.all()` is a good choice:
+
+### When to Use `Promise.all()`
+
+*   **Independent Asynchronous Tasks:** Use `Promise.all()` when you have multiple asynchronous tasks that do not depend on each other and can be executed simultaneously. For example, fetching data from multiple independent API endpoints. [javascripttutorial.net](https://www.javascripttutorial.net/javascript-promise-all/)
+*   **Aggregating Results:** When you need to collect the results from all promises before proceeding. `Promise.all()` resolves with an array containing the fulfillment values of all the input promises, in the same order as the promises were provided. [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
+*   **"Fail-Fast" Behavior is Desired:** `Promise.all()` rejects immediately if any of the input promises reject. This "fail-fast" behavior is useful when the entire operation is considered a failure if even one part fails. [logrocket.com](https://blog.logrocket.com/promise-all-modern-async-patterns/)
+*   **Concurrent Operations for Performance:** When you want to speed up execution by running multiple asynchronous operations at the same time, rather than sequentially. [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
+*   **Running Multiple API Requests:** A common use case is to make several API calls simultaneously and process their responses together. [educative.io](https://www.educative.io/courses/javascript-promises/when-to-use-the-promise-all-method)
+*   **Concurrent File Reading (e.g., in Node.js):** When reading multiple files in parallel to improve efficiency before processing their content. [educative.io](https://www.educative.io/courses/javascript-promises/when-to-use-the-promise-all-method)
+
+### Example
+
+```javascript
+const promise1 = Promise.resolve(3);
+const promise2 = 42; // Non-promise values are treated as already resolved promises
+const promise3 = new Promise((resolve, reject) => {
+  setTimeout(resolve, 100, 'foo');
+});
+
+Promise.all([promise1, promise2, promise3]).then((values) => {
+  console.log(values); // Expected output: [3, 42, "foo"]
+});
+```
+
+### When to Reconsider `Promise.all()`
+
+While `Promise.all()` is very useful, there are situations where alternative methods might be more appropriate:
+
+- **When Not All Promises Need to Succeed:** If you want to get results from all promises, even if some fail, use `Promise.allSettled()`. [logrocket.com](https://blog.logrocket.com/promise-all-modern-async-patterns/)
+
+- **When You Only Need the First Success:** If you only care about the result of the first promise that fulfills, use `Promise.any()`. [logrocket.com](https://blog.logrocket.com/promise-all-modern-async-patterns/)
+
+- **When You Need the First Settled Result (Success or Failure):** If you need the result of the first promise that settles (either resolves or rejects), use `Promise.race()`. [logrocket.com](https://blog.logrocket.com/promise-all-modern-async-patterns/)
+
+- **Variable Response Times Leading to Inefficiency:** If requests have highly variable response times, `Promise.all()` might not be the most efficient if one slow request holds up the whole process. Consider sequential processing or rate limiting in such cases. [medium.com](https://medium.com/@selieshjksofficial/reconsidering-promise-all-when-not-to-use-it-in-javascript-863cc8c20a19)
+
+- **High Memory Consumption with Large Data:** If promises return very large data, `Promise.all()` could lead to high memory usage as all results are stored. Consider processing data in chunks or using streaming. [medium.com](https://medium.com/@selieshjksofficial/reconsidering-promise-all-when-not-to-use-it-in-javascript-863cc8c20a19)
+
+
+In summary, `Promise.all()` is ideal for scenarios where you need to run multiple asynchronous tasks concurrently and require all of them to succeed for the overall operation to be considered successful.
