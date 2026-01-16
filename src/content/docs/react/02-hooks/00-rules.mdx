@@ -1,0 +1,21 @@
+---
+title: Rules of Hook in React
+---
+
+React Hooks follow two primary rules that ensure stateful logic stays predictable across renders.
+
+## 1. Only Call Hooks at the Top Level
+
+You must always call Hooks at the top level of your React function, before any early returns.
+
+- No Loops or Conditions: Do not call Hooks inside if statements, for loops, or nested functions.
+- Consistent Order: React relies on the order in which Hooks are called to associate state with the correct Hook between renders. If a Hook call is skipped due to a condition, the order shifts, causing bugs or crashes.
+- The Solution: If you need an effect or state to be conditional, put the condition inside the Hook (e.g., `useEffect(() => { if (condition) { ... } }))` rather than wrapping the Hook in the condition.
+
+## 2. Only Call Hooks from React Functions
+
+Hooks are not regular JavaScript functions; they can only be used in specific contexts:
+
+- Function Components: Call Hooks within the body of a React function component.
+- Custom Hooks: Call Hooks inside other custom Hooks.
+- Invalid Locations: Do not call Hooks in regular JavaScript functions, class components, event handlers, or inside functions passed to useMemo or useEffect.

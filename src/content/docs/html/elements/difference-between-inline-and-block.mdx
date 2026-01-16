@@ -1,0 +1,36 @@
+---
+title: Difference between Inline and Block Element
+---
+
+In HTML, the primary difference between inline and block elements is how they occupy space and affect the flow of a webpage's layout.
+
+## Block Level Elements
+
+These elements act as structural boxes that stack vertically.
+
+- **Behavior**: They create a visible break before and after themselves, pushing subsequent content to the next line.
+
+- **Examples**:
+  - `<div>`
+  - `<p>`
+  - `h1` to `h6`
+  - `ul`, `ol`, `li` (Lists)
+  - `<section>`, `<article>`, `<header>`, `<footer>` (Semantic Regions)
+
+## Inline Elements
+
+These elements act as "presentational" markers that flow with the text.
+
+- **Behavior**: They appear side-by-side on the same line if there is space.
+
+- **Examples**:
+  - `<span>` (Generic Container for text)
+  - `<a>` (Hyperlink)
+  - `<strong>` and `<em>` (Emphasis)
+  - `<img>` (Image)
+  - `<button>` and `<input>` (UI components)
+
+## Inline-Block Hybrid
+
+You can use the CSS display property to set an element to display: inline-block. 
+This allows the element to flow side-by-side like an inline element while still respecting width, height, and vertical spacing like a block element.
