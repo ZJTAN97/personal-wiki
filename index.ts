@@ -1,11 +1,26 @@
-// help me to create this promiseTest that if i executed the code above it will print out 'hello world' after 5 s example: promiseTest.then((res) => console.log(res)); "
+function maxArea(height: number[]): number {
+  let left = 0;
+  let right = height.length - 1;
+  let result = 0;
 
-const promiseTest = async () => {
-  return await new Promise(() =>
-    setTimeout(() => {
-      console.log("hello world");
-    }, 5000)
-  );
-};
+  while (left !== right) {
 
-promiseTest();
+    result = Math.max(
+      result,
+      (right - left) * Math.min(height[left], height[right])
+    );
+
+    if (height[left] < height[right]) {
+      left++;
+    } else {
+      right--;
+    }
+  }
+
+  console.log(result);
+
+  return result;
+}
+
+maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]); // 49
+maxArea([1, 2, 1]); // 2

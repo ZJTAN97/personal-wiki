@@ -1,0 +1,25 @@
+---
+title: 392. Is Subsequence
+---
+
+## Solution
+
+```ts
+function isSubsequence(s: string, t: string): boolean {
+  const sArray = s.split("");
+  const tArray = t.split("");
+
+  let sPointer = 0;
+
+  for (let tPointer = 0; tPointer < tArray.length; tPointer++) {
+    if (tArray[tPointer] === sArray[sPointer]) {
+      sPointer++;
+    }
+  }
+
+  return sPointer === sArray.length;
+}
+
+isSubsequence("abc", "ahbgdc"); // true
+isSubsequence("axc", "ahbgdc"); // false
+```
