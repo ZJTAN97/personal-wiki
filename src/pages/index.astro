@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
+import { Github, Linkedin } from "@lucide/astro";
 ---
 
 <BaseLayout>
@@ -11,7 +12,7 @@ import { buttonVariants } from "@/components/ui/button";
     >
       <motion.div
         className="flex flex-col items-start justify-center w-full"
-        initial={{ y: -20, opacity: 0 }}
+        initial={{ y: -30, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         client:load
@@ -27,7 +28,7 @@ import { buttonVariants } from "@/components/ui/button";
       </motion.div>
       <motion.div
         className="flex flex-col items-start justify-center w-full"
-        initial={{ y: -20, opacity: 0 }}
+        initial={{ y: 30, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         client:load
@@ -40,12 +41,33 @@ import { buttonVariants } from "@/components/ui/button";
           >
         </div>
       </motion.div>
+
+      <motion.div
+        className="flex w-full"
+        initial={{ y: 50, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        client:load
+      >
+        <div class="flex flex-col gap-2 p-4">
+          <a href="https://github.com/ZJTAN97" target="_blank"
+            ><Github class="text-teal-200" /></a
+          >
+        </div>
+        <div class="flex flex-col gap-2 p-4">
+          <a
+            href="https://www.linkedin.com/in/tan-zhi-jie-78ba71192/"
+            target="_blank"><Linkedin class="text-teal-200" /></a
+          >
+        </div>
+      </motion.div>
     </section>
     <section
+      id="projects"
       class="w-full h-dvh flex flex-col items-start justify-center px-30 gap-10"
     >
       <motion.div
-        className="flex flex-col items-start justify-center w-full"
+        className="flex gap-50 justify-center w-full"
         initial={{ y: -20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
