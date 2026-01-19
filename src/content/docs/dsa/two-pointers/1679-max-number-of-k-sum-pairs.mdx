@@ -1,0 +1,56 @@
+---
+title: 1679. Max Number of K-Sum Pairs
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/max-number-of-k-sum-pairs/).
+
+## Intuition
+
+Using a hash table. Finding the difference.
+
+## Approach
+
+Store a hashtable of the "difference" and the "count"
+
+Example: `[3, 1, 3, 4, 3], k = 6`
+
+```
+const count = {
+    3: 1,
+    1: 1
+}
+
+pairs = 1
+```
+
+## Solution
+
+```ts
+function maxOperations(nums: number[], k: number): number {
+  let operations = 0;
+
+  const count: Record<number, number> = {};
+
+  for (const num of nums) {
+    const difference = k - num;
+    if (count[difference] >= 1) {
+      operations++;
+      count[difference]--;
+    } else {
+      if (count[num]) {
+        count[num]++;
+      } else {
+        count[num] = 1;
+      }
+    }
+  }
+
+  return operations;
+}
+
+maxOperations([1, 2, 3, 4], 5); // 2
+```

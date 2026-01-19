@@ -8,6 +8,37 @@ Difficulty: <Badge text="MEDIUM" variant="caution" />
 
 Problem description can be found [here](https://leetcode.com/problems/product-of-array-except-self/description/).
 
+## Intuition
+
+Imagine two arrays of `left` and `right`
+
+Multiply everything to the left hand side first, starting with 1.
+
+Example: `[1, 2, 3, 4]` will yield `[1, 1, 2, 6]`
+
+- 0th position: 1 * 1 (starting) = 1
+- 1st position: 1 * 1 * 1 = 1
+- 2nd position: 1 * 1 * 1 * 2 = 2
+- 3rd position: 1 * 1 * 1 * 2 * 3 = 6
+
+Same goes for the right hand side
+
+`[1, 2, 3, 4]` will yield `[24, 12, 4, 1]`
+
+- 0th position: 2 * 3 * 4 * 1 (starting) = 24
+- 1st position: 3 * 4 * 1 = 12
+- 2nd position: 4 * 1 * 1 = 4
+- 3rd position: 1 * 1 = 1
+
+## Approach
+
+Understanding the intuition, the approach is really just manipulate the array in place to keep memory usage O(1)
+
+First run through the left side, then run through the right side. (should work vice versa).
+
+Key thing is to remember to multiple the initial left and right value with starting value of 1.
+
+
 ## Solution
 
 ```ts

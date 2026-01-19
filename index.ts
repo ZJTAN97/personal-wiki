@@ -1,26 +1,23 @@
-function maxArea(height: number[]): number {
-  let left = 0;
-  let right = height.length - 1;
-  let result = 0;
+function maxOperations(nums: number[], k: number): number {
+  let operations = 0;
 
-  while (left !== right) {
+  const count: Record<number, number> = {};
 
-    result = Math.max(
-      result,
-      (right - left) * Math.min(height[left], height[right])
-    );
-
-    if (height[left] < height[right]) {
-      left++;
+  for (const num of nums) {
+    const difference = k - num;
+    if (count[difference] >= 1) {
+      operations++;
+      count[difference]--;
     } else {
-      right--;
+      if (count[num]) {
+        count[num]++;
+      } else {
+        count[num] = 1;
+      }
     }
   }
 
-  console.log(result);
-
-  return result;
+  return operations;
 }
 
-maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]); // 49
-maxArea([1, 2, 1]); // 2
+maxOperations([1, 2, 3, 4], 5); // 2
