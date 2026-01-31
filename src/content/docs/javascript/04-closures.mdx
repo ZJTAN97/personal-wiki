@@ -33,3 +33,15 @@ myFunction('Hello Mr.'); //output: Hello Mr.John
 
 As per the above code, the inner function `greetingInfo` has access to variables in outer function scope `Welcome`
 even though the outer function has returned. 
+
+## Stale Closures
+
+Try it out
+```js
+let first = 1;
+let second = first;
+
+first = 2;
+
+console.log(second); // 1
+```
