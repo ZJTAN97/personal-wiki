@@ -10,7 +10,107 @@ Problem description can be found [here](https://leetcode.com/problems/maximum-nu
 
 ## Approach
 
-Fixed Sliding Window
+### What is a Fixed Sliding Window?
+
+A **fixed sliding window** is used when you need to process consecutive elements of a fixed size k. Instead of recomputing the count for each window from scratch (O(n×k)), we slide the window and update the count in O(1) time.
+
+### Why This Problem Uses Sliding Window
+
+We need to find the maximum number of vowels in any contiguous substring of length k. The brute force approach would check each k-length substring separately, resulting in O(n×k) time. With sliding window, we achieve O(n) time.
+
+### Algorithm Steps
+
+1. **Initialize**: Count vowels in first k characters (first window)
+2. **Slide**: Move window one position right, update count by checking if new character is a vowel and if leftmost character was a vowel
+3. **Track**: Keep track of maximum vowel count seen
+
+### Detailed Visualization
+
+Given: `s = "abciiidef"`, `k = 3`
+
+```
+Index:     0    1    2    3    4    5    6    7    8
+String:  [ a,  b,  c,  i,  i,  i,  d,  e,  f  ]
+          [-----------]                          <- Window 1
+               [-----------]                      <- Window slides right
+                    [-----------]                  <- Window 2
+                         ...
+
+Step 1 - Initial window [0..2]: "abc"
+┌───┬───┬───┐
+│ a │ b │ c │
+└───┴───┴───┘
+Vowels: a ✓, b ✗, c ✗
+Count = 1
+Max = 1
+
+Step 2 - Slide to [1..3]: "bci"
+┌───┬───┬───┐
+│ b │ c │ i │
+└───┴───┴───┘
+   ▲       ▲
+   │       └── Added (i) - vowel, +1
+   └────────── Removed (a) - vowel, -1
+
+Count = 1 - 1 + 1 = 1
+Max stays 1
+
+Step 3 - Slide to [2..4]: "cii"
+┌───┬───┬───┐
+│ c │ i │ i │
+└───┴───┴───┘
+   ▲       ▲
+   │       └── Added (i) - vowel, +1
+   └────────── Removed (b) - not vowel, +0
+
+Count = 1 - 0 + 1 = 2
+Max = 2
+
+Step 4 - Slide to [3..5]: "iii"
+┌───┬───┬───┐
+│ i │ i │ i │
+└───┴───┴───┘
+   ▲       ▲
+   │       └── Added (i) - vowel, +1
+   └────────── Removed (c) - not vowel, +0
+
+Count = 2 - 0 + 1 = 3
+Max = 3 ✓ (found "iii")
+
+Since we've found k vowels, we can early return!
+```
+
+### Key Pattern for Sliding Window
+
+```typescript
+const vowels = new Set(["a", "e", "i", "o", "u"]);
+
+// Initialize first window
+let count = 0;
+for (let i = 0; i < k; i++) {
+    if (vowels.has(s[i])) count++;
+}
+
+let max = count;
+
+// Slide the window
+for (let i = k; i < s.length; i++) {
+    // Remove leftmost character
+    if (vowels.has(s[i - k])) count--;
+    // Add new rightmost character
+    if (vowels.has(s[i])) count++;
+    
+    // Update max
+    max = Math.max(max, count);
+}
+```
+
+### When to Use Fixed Sliding Window
+
+- Need to process consecutive elements of fixed length
+- Want O(n) instead of O(n×k)
+- Looking for max/min/count of each window
+- This problem: vowel counting in substrings
 
 ## Solution
 

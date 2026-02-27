@@ -10,7 +10,89 @@ Problem description can be found [here](https://leetcode.com/problems/maximum-av
 
 ## Approach
 
-Fixed Sliding Window
+### What is a Fixed Sliding Window?
+
+A **fixed sliding window** is used when you need to process consecutive elements of a fixed size k. Instead of recomputing the sum for each window from scratch (O(n×k)), we slide the window and update the sum in O(1) time.
+
+### Why This Problem Uses Sliding Window
+
+We need to find the maximum average of any contiguous subarray of length k. The brute force approach would calculate the sum of each k-length subarray separately, resulting in O(n×k) time. With sliding window, we achieve O(n) time.
+
+### Algorithm Steps
+
+1. **Initialize**: Calculate sum of first k elements (first window)
+2. **Slide**: Move window one position right, update sum by removing left element and adding new right element
+3. **Track**: Keep track of maximum average seen
+
+### Detailed Visualization
+
+Given: `nums = [1, 12, -5, -6, 50, 3]`, `k = 4`
+
+```
+Index:     0    1    2    3    4    5
+Array:  [  1,  12,  -5,  -6,  50,   3  ]
+          [-----------]              <- Window 1
+          [-----------]              <- Window slides right
+               [-----------]          <- Window 2
+                    [-----------]    <- Window 3
+
+Step 1 - Initial window [0..3]:
+┌───┬────┬────┬────┐
+│ 1 │ 12 │ -5 │ -6 │
+└───┴────┴────┴────┘
+Sum = 1 + 12 + (-5) + (-6) = 2
+Average = 2 / 4 = 0.5
+Max = 0.5
+
+Step 2 - Slide to [1..4]:
+┌───┬────┬────┬────┐
+│   │ 12 │ -5 │ -6 │ 50 │
+│   └────┴────┴────┴───┘
+        ▲          ▲
+        │          └── Added (+50)
+        └──────────── Removed (-1)
+
+Sum = 2 + 50 - 1 = 51
+Average = 51 / 4 = 12.75
+Max = 12.75
+
+Step 3 - Slide to [2..5]:
+┌───┬────┬────┬────┐
+│   │    │ -5 │ -6 │ 50 │ 3 │
+│   └────┴────┴────┴────┴───┘
+            ▲          ▲
+            │          └── Added (+3)
+            └──────────── Removed (-12)
+
+Sum = 51 + 3 - 12 = 42
+Average = 42 / 4 = 10.5
+Max stays 12.75
+```
+
+### Key Pattern for Sliding Window
+
+```typescript
+// Initialize first window
+let windowSum = nums.slice(0, k).reduce((a, b) => a + b, 0);
+let maxAvg = windowSum / k;
+
+// Slide the window
+for (let i = k; i < nums.length; i++) {
+    // Add new element (right side)
+    windowSum += nums[i];
+    // Remove old element (left side)
+    windowSum -= nums[i - k];
+    // Update max
+    maxAvg = Math.max(maxAvg, windowSum / k);
+}
+```
+
+### When to Use Fixed Sliding Window
+
+- Need to process consecutive elements of fixed length
+- Want O(n) instead of O(n×k)
+- Looking for max/min/sum of each window
+
 
 ## Solution
 
