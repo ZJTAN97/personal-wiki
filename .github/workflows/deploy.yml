@@ -65,4 +65,4 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_B64 }}
         with:
           args: |
-            rollout restart deployment/docs
+            rollout restart deployment/personal-wiki

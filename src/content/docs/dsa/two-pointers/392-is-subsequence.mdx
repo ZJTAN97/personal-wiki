@@ -8,6 +8,174 @@ Difficulty: <Badge text="EASY" variant="success" />
 
 Problem description can be found [here](https://leetcode.com/problems/is-subsequence/).
 
+## Approach
+
+### What is a Subsequence?
+
+A **subsequence** is a sequence that can be derived from another sequence by deleting some (or no) elements without changing the order of the remaining elements. Unlike substrings, subsequences don't need to be contiguous.
+
+For example:
+- `"abc"` is a subsequence of `"ahbgdc"` because we can find 'a' → 'b' → 'c' in order
+- `"axc"` is NOT a subsequence of `"ahbgdc"` because there's no 'c' after 'x'
+
+### Why This Works
+
+This problem uses a **two-pointer** technique where both pointers move in the same direction through their respective strings. The key insight is:
+
+1. We maintain a pointer `sPointer` tracking our current position in string `s` (the subsequence we're looking for)
+2. We iterate through string `t` with `tPointer`, looking for each character of `s` in order
+3. When we find a match, we advance `sPointer` to look for the next character
+4. At the end, if `sPointer` has reached the end of `s`, all characters were found in order
+
+This works because:
+- We never go backwards in `t`, preserving the order requirement
+- We only advance `sPointer` when we find a match, ensuring all characters are found
+- A single pass through `t` is sufficient (O(n) time)
+
+### Algorithm Steps
+
+1. Initialize `sPointer = 0` to track position in string `s`
+2. Iterate through each character in string `t` using `tPointer`
+3. For each character in `t`, check if it matches the current character we're looking for in `s` (at `sPointer`)
+4. If it matches, increment `sPointer` to move to the next character in `s`
+5. After iterating through all of `t`, check if `sPointer === s.length`
+6. If true, all characters were found in order → return `true`; otherwise return `false`
+
+### Visualization
+
+Let's trace through `s = "abc"` and `t = "ahbgdc"`:
+
+```
+t:  a  h  b  g  d  c
+    ↑
+s:  a  b  c        (looking for: 'a')
+sPointer: 0
+```
+
+**Step 1**: `t[0] = 'a'` matches `s[0] = 'a'` → advance sPointer
+
+```
+t:  a  h  b  g  d  c
+       ↑
+s:  a  b  c     (looking for: 'b')
+sPointer: 1
+```
+
+**Step 2**: `t[1] = 'h'` doesn't match `s[1] = 'b'` → no advance
+
+```
+t:  a  h  b  g  d  c
+       ↑
+s:  a  b  c     (looking for: 'b')
+sPointer: 1
+```
+
+**Step 3**: `t[2] = 'b'` matches `s[1] = 'b'` → advance sPointer
+
+```
+t:  a  h  b  g  d  c
+          ↑
+s:  a  b  c        (looking for: 'c')
+sPointer: 2
+```
+
+**Step 4**: `t[3] = 'g'` doesn't match `s[2] = 'c'` → no advance
+
+```
+t:  a  h  b  g  d  c
+             ↑
+s:  a  b  c        (looking for: 'c')
+sPointer: 2
+```
+
+**Step 5**: `t[4] = 'd'` doesn't match `s[2] = 'c'` → no advance
+
+```
+t:  a  h  b  g  d  c
+                ↑
+s:  a  b  c        (looking for: 'c')
+sPointer: 2
+```
+
+**Step 6**: `t[5] = 'c'` matches `s[2] = 'c'` → advance sPointer
+
+```
+t:  a  h  b  g  d  c
+                   ↑
+s:  a  b  c           (all found!)
+sPointer: 3
+```
+
+**Final check**: `sPointer (3) === s.length (3)` → **Return TRUE**
+
+Now let's trace a failing case: `s = "axc"` and `t = "ahbgdc"`
+
+```
+t:  a  h  b  g  d  c
+    
+s:  a  x  c     (looking for: 'a')
+sPointer: 0
+```
+
+**Step 1**: `t[0] = 'a'` matches `s[0] = 'a'` → advance sPointer
+
+```
+t:  a  h  b  g  d  c
+    ↑
+s:  a  x  c     (looking for: 'x')
+sPointer: 1
+```
+
+**Step 2-5**: Continue scanning, but never find 'x' in `t`
+
+```
+t:  a  h  b  g  d  c
+                 ↑
+s:  a  x  c     (looking for: 'x')
+sPointer: 1 (stuck!)
+```
+
+**Step 6**: `t[5] = 'c'` doesn't match `s[1] = 'x'`
+
+**Final check**: `sPointer (1) !== s.length (3)` → **Return FALSE**
+
+### Key Pattern / Code Template
+
+```ts
+function isSubsequence(s: string, t: string): boolean {
+  let sPointer = 0;
+  
+  for (let tPointer = 0; tPointer < t.length; tPointer++) {
+    if (t[tPointer] === s[sPointer]) {
+      sPointer++;
+    }
+  }
+  
+  return sPointer === s.length;
+}
+```
+
+**Template breakdown**:
+- `sPointer`: Tracks position in the target subsequence
+- Single for-loop: Iterates through `t` once (O(n))
+- Match check: Only advances when characters match
+- Final check: Verifies all characters were found
+
+### When to Use This Pattern
+
+Use the two-pointers subsequence pattern when:
+
+1. **Checking subsequence existence** - Determining if one string is a subsequence of another
+2. **Pattern matching in order** - Finding elements in a sequence while preserving order
+3. **String matching with gaps** - When you need to find characters that appear in order but not necessarily contiguously
+4. **Verification problems** - Checking if one sequence can be derived from another by deleting elements
+
+**Related problems**:
+- 521. Longest Uncommon Subsequence I
+- 522. Longest Uncommon Subsequence II
+- 792. Number of Matching Subsequences
+- 1632. Matrix Diagonal Sum (different concept, but similar pattern)
+
 ## Solution
 
 ```ts

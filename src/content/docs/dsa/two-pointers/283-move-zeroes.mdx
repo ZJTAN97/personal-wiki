@@ -10,10 +10,132 @@ Problem description can be found [here](https://leetcode.com/problems/move-zeroe
 
 ## Approach
 
-Using two pointers, the right pointer constantly moves (as part of the for-loop index iteration).
-The left pointer only increases when the current right pointer value is not zero.
+### What is the Two Pointers Technique?
 
-Remember to think of the swap as just values swapping, not the pointers swapping!
+The **two pointers** technique uses two pointers (indices) that traverse an array in a coordinated way. In this problem:
+- **Right pointer**: Always moves forward with each iteration (scans for non-zero elements)
+- **Left pointer**: Only moves forward when we place a non-zero element
+
+This is essentially a variant of the "partition" step in quicksort - separating the array into two regions.
+
+### Why This Works
+
+Instead of creating a new array, we use the two-pointer technique to:
+1. Collect all non-zero elements at the front (left side)
+2. Fill the remaining positions with zeros (right side)
+
+### Algorithm Steps
+
+1. **Left pointer starts at 0**: This marks where the next non-zero element should go
+2. **Right pointer scans all elements**: Looking for non-zero values
+3. **When non-zero found**: Swap with left pointer position, then advance left pointer
+4. **Continue**: Until right pointer finishes scanning
+
+### Detailed Visualization
+
+Given: `nums = [0, 1, 0, 3, 12]`
+
+```
+Initial state:
+Index:  0   1   2   3   4
+      [ 0,  1,  0,  3, 12 ]
+        ▲   ▲
+        │   └── rightPointer (also starts at 0, iterated to 1 where non zero is found)
+        └── leftPointer
+
+Step 1: rightPointer = 0, nums[0] = 0 (skipped, not zero)
+        leftPointer = 0, rightPointer = 1
+
+Step 2: rightPointer = 1, nums[1] = 1 (non-zero found!)
+┌─────────────────────────────────────┐
+│ Before swap: nums = [0, 1, 0, 3, 12]│
+│                                    │
+│ leftPointer=0 ──► [ 0 ]            │
+│ rightPointer=1 ──► [ 1 ]            │
+│                                    │
+│ Swap: 0 ↔ 1                        │
+│ After swap: nums = [1, 0, 0, 3, 12] │
+│                                    │
+│ Move leftPointer++ → leftPointer=1 │
+└─────────────────────────────────────┘
+
+        leftPointer = 1
+        rightPointer = 2
+
+Step 3: rightPointer = 2, nums[2] = 0 (skipped)
+
+        leftPointer = 1
+        rightPointer = 3
+
+Step 4: rightPointer = 3, nums[3] = 3 (non-zero found!)
+┌─────────────────────────────────────┐
+│ Before swap: nums = [1, 0, 0, 3, 12]│
+│                                     │
+│ leftPointer=1 ──► [ 0 ]             │
+│ rightPointer=3 ──► [ 3 ]            │
+│                                     │
+│ Swap: 0 ↔ 3                         │
+│ After swap: nums = [1, 3, 0, 0, 12] │
+│                                     │
+│ Move leftPointer++ → leftPointer=2  │
+└─────────────────────────────────────┘
+
+        leftPointer = 2
+        rightPointer = 4
+
+Step 5: rightPointer = 4, nums[4] = 12 (non-zero found!)
+┌─────────────────────────────────────┐
+│ Before swap: nums = [1, 3, 0, 0, 12]│
+│                                     │
+│ leftPointer=2 ──► [ 0 ]             │
+│ rightPointer=4 ──► [ 12 ]           │
+│                                     │
+│ Swap: 0 ↔ 12                        │
+│ After swap: nums = [1, 3, 12, 0, 0] │
+│                                     │
+│ Move leftPointer++ → leftPointer=3  │
+└─────────────────────────────────────┘
+
+Done! leftPointer = 3, all zeros moved to end.
+Result: [1, 3, 12, 0, 0]
+```
+
+### Key Concept - It's a Swap, Not Pointer Swap
+
+```
+❌ WRONG: Swapping the pointers themselves
+   leftPointer ↔ rightPointer
+
+✓ CORRECT: Swapping the VALUES at those positions
+   nums[leftPointer] ↔ nums[rightPointer]
+   
+Note: We only swap when we find a non-zero element!
+```
+
+### Key Pattern for This Problem
+
+```typescript
+function moveZeroes(nums: number[]): void {
+  let leftPointer = 0;
+
+  for (let rightPointer = 0; rightPointer < nums.length; rightPointer++) {
+    // Found a non-zero element
+    if (nums[rightPointer] !== 0) {
+      // Swap with left pointer position
+      [nums[leftPointer], nums[rightPointer]] = [nums[rightPointer], nums[leftPointer]];
+      
+      // Advance left pointer to next position
+      leftPointer++;
+    }
+  }
+}
+```
+
+### When to Use This Pattern
+
+- Moving elements to separate regions (non-zeros vs zeros)
+- Partitioning arrays based on a condition
+- Removing certain elements while maintaining relative order
 
 ## Solution
 
