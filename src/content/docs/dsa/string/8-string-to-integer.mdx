@@ -1,0 +1,239 @@
+---
+title: 8. String to Integer (atoi)
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/string-to-integer-atoi/description/).
+
+## Approach
+
+### What is String to Integer (atoi)?
+
+The **atoi** (ASCII to integer) problem converts a string to a 32-bit signed integer. The conversion follows specific rules:
+
+1. **Skip leading whitespace** - Ignore any spaces at the beginning
+2. **Handle optional sign** - Read an optional '+' or '-' prefix
+3. **Read digits** - Consume consecutive numeric digits (0-9)
+4. **Stop at non-digit** - Stop reading when a non-digit character is encountered
+5. **Clamp to 32-bit range** - If the result overflows, return the appropriate boundary value
+
+For example:
+- `"   -42"` → `-42`
+- `"4193 with words"` → `4193`
+- `"-91283472332"` → `-2147483648` (clamped to INT_MIN)
+
+### Why This Works
+
+This problem uses a **sequential processing** approach with state tracking:
+
+1. **State machine mindset** - We process the string in distinct phases: skip → sign → digits
+2. **Character-by-character validation** - Each character is checked to determine if it should be processed
+3. **Overflow prevention** - We check for overflow before it happens, not after (the solution code has this issue - it should check during digit accumulation)
+4. **Early termination** - As soon as we encounter a non-digit (after reading digits), we stop
+
+The key insight is that we build the number incrementally, checking at each step whether adding a new digit would cause overflow.
+
+### Algorithm Steps
+
+1. **Initialize** - Set up `index = 0`, `result = 0`, `isNegative = false`, and boundary constants
+2. **Skip whitespace** - Advance index while current character is a space
+3. **Check sign** - If '+' or '-' is found, set `isNegative` accordingly and advance index
+4. **Read digits** - For each character:
+   - Convert char to digit: `num = charCode - 48`
+   - If digit is invalid (not 0-9), break
+   - Otherwise, append to result
+5. **Apply sign** - Multiply by -1 if `isNegative`
+6. **Clamp to range** - Return boundary values if overflowed, otherwise return the number
+
+### Visualization
+
+Let's trace through `"   -42"` step by step:
+
+```
+Input: "   -42"
+       ↑
+index: 0
+```
+
+**Step 1: Skip whitespace**
+```
+Input: "   -42"
+         ↑
+index: 3 (skipped 3 spaces)
+```
+
+**Step 2: Check sign**
+```
+Input: "   -42"
+          ↑
+index: 4
+isNegative: true (found '-')
+```
+
+**Step 3: Read digits**
+
+```
+Input: "   -42"
+           ↑
+digit: 4 → result = 4
+```
+
+```
+Input: "   -42"
+            ↑
+digit: 2 → result = 42
+```
+
+**Step 4: Apply sign**
+```
+result = 42, isNegative = true
+output = -42
+```
+
+**Final result: -42**
+
+---
+
+Let's trace a more complex case: `"-91283472332"` (overflow case)
+
+```
+Input: "-91283472332"
+          ↑
+isNegative: true
+```
+
+Building the number digit by digit:
+```
+Digit '9': result = 9
+Digit '1': result = 91
+Digit '2': result = 912
+...
+Digit '7': result = 91283472
+Digit '2': result = 912834723 → OVERFLOW CHECK!
+             912834723 > 2147483647? YES!
+```
+
+Since adding another digit would overflow, we clamp to `INT_MIN = -2147483648`.
+
+### Key Pattern / Code Template
+
+```ts
+function myAtoi(s: string): number {
+  let index = 0;
+  let result = 0;
+  let isNegative = false;
+
+  const UPPER_LIMIT = 2 ** 31 - 1;  // 2147483647
+  const LOWER_LIMIT = -(2 ** 31);   // -2147483648
+
+  // Step 1: Skip leading whitespace
+  while (s[index] === " ") {
+    index++;
+  }
+
+  // Step 2: Check for optional sign
+  if (s[index] === "+" || s[index] === "-") {
+    isNegative = s[index] === "-";
+    index++;
+  }
+
+  // Step 3: Read digits with overflow checking
+  for (let i = index; i < s.length; i++) {
+    const digit = s.charCodeAt(i) - 48; // Convert char to number (0-9)
+
+    // Stop if non-digit encountered
+    if (digit < 0 || digit > 9) {
+      break;
+    }
+
+    // Check overflow BEFORE appending
+    // If result > (MAX - digit) / 10, adding digit would overflow
+    if (isNegative) {
+      // For negative numbers, check against -LOWER_LIMIT (2147483648)
+      if (result < (LOWER_LIMIT + digit) / 10) {
+        return LOWER_LIMIT;
+      }
+    } else {
+      if (result > (UPPER_LIMIT - digit) / 10) {
+        return UPPER_LIMIT;
+      }
+    }
+
+    result = result * 10 + digit;
+  }
+
+  // Step 4: Apply sign and return
+  return isNegative ? -result : result;
+}
+```
+
+**Template breakdown**:
+- **Whitespace skip**: Loop through leading spaces
+- **Sign detection**: Single check for '+' or '-'
+- **Digit reading**: Char code conversion (`- 48`)
+- **Overflow check**: Compare before multiplying by 10
+- **Sign application**: Negate at the end
+
+### When to Use This Pattern
+
+Use this string-to-integer pattern when:
+
+1. **Input parsing with boundaries** - Converting string numbers that need 32-bit integer clamping
+2. **State-based string processing** - When you need to handle different character types in sequence
+3. **Character-by-character validation** - When each character affects the state/result
+4. **Type conversion problems** - Similar to `Integer.parseInt()` or `atoi()` in various languages
+
+**Key differences from other string problems**:
+- Unlike subsequence problems, we process ALL valid characters
+- Unlike sliding window, we don't maintain a window - we process forward only
+- Unlike palindrome checks, order matters but we don't reverse anything
+
+**Related problems**:
+- 65. Valid Number
+- 8. String to Integer (atoi)
+- 443. String Compression
+- 157. Read N Characters Given Read4
+- 158. Read N Characters Given Read4 II (more complex)
+
+## Solution
+
+```ts
+function myAtoi(s: string): number {
+  let index = 0;
+  let result = "";
+  let isNegative = false;
+
+  const UPPER_LIMIT = 2 ** 31 - 1;
+  const LOWER_LIMIT = -(2 ** 31);
+
+  while (s[index] === " ") {
+    index++;
+  }
+
+  if (s[index] === "+" || s[index] === "-") {
+    isNegative = s[index] === "-";
+    index++;
+  }
+
+  for (let i = index; i < s.length; i++) {
+    const number = s.charCodeAt(i) - 48; // only takes in 0-9
+
+    if (number < 0 || number > 9) {
+      break;
+    } else {
+      result = result + s[i];
+    }
+  }
+
+  const output = isNegative ? -1 * Number(result) : Number(result);
+
+  return output > UPPER_LIMIT
+    ? UPPER_LIMIT
+    : output < LOWER_LIMIT
+      ? LOWER_LIMIT
+      : output;
+}
+```
