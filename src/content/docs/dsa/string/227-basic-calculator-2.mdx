@@ -1,0 +1,226 @@
+---
+title: 227. Basic Calculator 2
+---
+
+import { Badge } from "@astrojs/starlight/components";
+
+Difficulty: <Badge text="MEDIUM" variant="caution" />
+
+Problem description can be found [here](https://leetcode.com/problems/basic-calculator-ii/description/).
+
+## Approach
+
+### What is this problem?
+
+This problem asks us to evaluate a basic arithmetic string expression containing non-negative integers, spaces, and four operators: `+`, `-`, `*`, `/`. The key challenge is handling **operator precedence** — multiplication and division should be evaluated before addition and subtraction (PEMDAS rule, without parentheses and exponents).
+
+For example:
+- `3 + 2 * 2 = 7` (not 10)
+- `3 + 2 * 2 - 1 = 6` (not 9)
+
+### Why this works
+
+The solution uses a **stack-based approach** to handle operator precedence elegantly:
+
+1. **Multiplication/Division take precedence**: When we encounter `*` or `/`, we compute the result immediately using the previous number stored in the stack. This ensures these operations are resolved before addition/subtraction.
+
+2. **Addition/Subtension are deferred**: When we encounter `+` or `-`, we simply push the number (with sign) onto the stack. We don't compute anything yet because there might be higher-precedence operations after it.
+
+3. **Final summation**: At the end, all additions and subtractions are resolved by summing everything in the stack.
+
+This approach is O(n) time and O(n) space, processing each character exactly once.
+
+### Algorithm Steps
+
+1. Initialize an empty stack to store numbers
+2. Track the current number being built (for multi-digit numbers like "42")
+3. Track the previous operator (initially "+")
+4. Iterate through each character in the string (including a sentinel at the end):
+   - If it's a digit, accumulate it into the current number
+   - If it's an operator or end of string, apply the previous operator:
+     - `+`: Push the current number onto the stack
+     - `-`: Push the negative of the current number onto the stack
+     - `*`: Pop the last number, multiply, push the result
+     - `/`: Pop the last number, divide (truncating toward zero), push the result
+   - Update the previous operator to the current character
+5. Sum all values in the stack and return the result
+
+### Visualization
+
+Let's trace through `3 + 2 * 2`:
+
+```
+Input: "3+2*2"
+Index:  0 1 2 3 4
+
+Step-by-step:
+
+Index 0: char = '3' (digit)
+  → Build num = "3"
+
+Index 1: char = '+' (operator)
+  → prevOperator is '+', apply it:
+    → stack.push(3)
+  → prevOperator = '+', num = ""
+
+Index 2: char = '2' (digit)
+  → Build num = "2"
+
+Index 3: char = '*' (operator)
+  → prevOperator is '+', apply it:
+    → stack.push(2)
+  → prevOperator = '*', num = ""
+
+Index 4: char = '2' (digit)
+  → Build num = "2"
+
+Index 5: char = undefined (sentinel, i === s.length)
+  → prevOperator is '*', apply it:
+    → stack.pop() = 3, compute 3 * 2 = 6
+    → stack.push(6)
+  → Stack is now [3, 6]
+
+Final: Sum stack = 3 + 6 = 9 ✓
+```
+
+Let's try a more complex example: `3 + 2 * 2 - 1 / 1 + 5`:
+
+```
+Step-by-step:
+
+Index 0: char = '3' → num = "3"
+Index 1: char = '+' → stack: [3], prevOp = '+'
+Index 2: char = '2' → num = "2"
+Index 3: char = '*' → stack: [3, 2], prevOp = '*'
+Index 4: char = '2' → num = "2"
+Index 5: char = ' ' → skip
+Index 6: char = '-' → prevOp is '*': stack.pop()=2, 2*2=4, stack: [3,4], prevOp = '-'
+Index 7: char = ' ' → skip
+Index 8: char = '1' → num = "1"
+Index 9: char = ' ' → skip
+Index 10: char = '/' → prevOp is '-': stack.push(-1), stack: [3,4,-1], prevOp = '/'
+Index 11: char = ' ' → skip
+Index 12: char = '1' → num = "1"
+Index 13: char = ' ' → skip
+Index 14: char = '+' → prevOp is '/': stack.pop()=-1, -1/1=-1, stack: [3,4,-1], prevOp = '+'
+Index 15: char = ' ' → skip
+Index 16: char = '5' → num = "5"
+Index 17: char = undefined (sentinel) → prevOp is '+': stack.push(5), stack: [3,4,-1,5]
+
+Final: Sum = 3 + 4 + (-1) + 5 = 11 ✓
+```
+
+### Key Pattern / Code Template
+
+```typescript
+function calculate(s: string): number {
+  const stack: number[] = [];
+  let num: string = "";
+  let prevOperator: string = "+";
+
+  for (let i = 0; i <= s.length; i++) {
+    const char = s[i] || ""; // Handle undefined at end
+
+    // Build multi-digit numbers
+    if (char >= "0" && char <= "9") {
+      num += char;
+      continue;
+    }
+
+    // Process operator or end of string
+    if ((char < "0" || char > "9") && char !== " " || i === s.length) {
+      const n = Number(num);
+      
+      switch (prevOperator) {
+        case "+": stack.push(n); break;
+        case "-": stack.push(-n); break;
+        case "*": stack.push(Number(stack.pop()) * n); break;
+        case "/": stack.push(Math.trunc(Number(stack.pop()) / n)); break;
+      }
+
+      prevOperator = char;
+      num = "";
+    }
+  }
+
+  return stack.reduce((a, b) => a + b, 0);
+}
+```
+
+### When to use this pattern
+
+Use this **stack-based operator precedence** pattern when:
+
+- Evaluating arithmetic expressions with multiple operators
+- Processing mathematical expressions without parentheses
+- You need O(n) evaluation without building an expression tree
+- The expression contains `+`, `-`, `*`, `/` with standard precedence rules
+
+This pattern is also useful for:
+- Basic calculator implementations
+- Expression validation problems
+- When you need to handle operator precedence without recursion
+
+**Variations to know:**
+- For expressions with parentheses, use a recursive descent parser or shunting-yard algorithm
+- For modulo operator (`%`), add another case following the `*` and `/` pattern
+- For unary operators (like `-1 + 2`), you'll need to handle the first character specially
+
+## Solution
+
+```ts
+function calculate(s: string): number {
+  // initialize stack as empty array
+  const stack: number[] = [];
+
+  // initialize num for adding number and prevOperator to track Math operator
+  let num: string = "";
+  let prevOperator: string = "+";
+
+  // run for loop from index 0 to length of s
+  for (let i = 0; i <= s.length; i++) {
+    // initialize char as s[i]
+    const char: string = s[i];
+
+    // i char is greater than or equal to "0" and less than or equal to "9"
+    // this handles scenarios like double digits numbers e.g. 13, 15, 42
+    if (char >= "0" && char <= "9") {
+      // add char in num and continue for loop
+      num += char;
+      continue;
+    }
+
+    // if char is less than "0" or char is greater than "9" and char is not equal to " " space or i is equal to length of s
+    if (((char < "0" || char > "9") && char !== " ") || i === s.length) {
+      switch (prevOperator) {
+        case "+": {
+          stack.push(Number(num));
+          break;
+        }
+        case "-": {
+          stack.push(-Number(num));
+          break;
+        }
+        case "*": {
+          stack.push(Number(stack.pop()) * Number(num));
+          break;
+        }
+        case "/": {
+          stack.push(Math.trunc(Number(stack.pop()) / Number(num)));
+          break;
+        }
+      }
+
+      // update prevOperator with char and num with "" empty string
+      prevOperator = char;
+      num = "";
+    }
+  }
+
+  // do sum of the all the number from stack and return it
+  return stack.reduce((total, value) => total + value, 0);
+}
+
+console.log(calculate("3+2*2"));
+console.log(calculate(" 3/2 "));
+```
