@@ -10,20 +10,142 @@ Problem description can be found [here](https://leetcode.com/problems/reverse-wo
 
 ## Approach
 
-Don't think there is any key learning concepts other than knowing your javascript string methods.
+### What is this problem?
+
+This problem asks us to reverse the order of words in a string while also handling extra spaces. Given a string like `"  the sky is   blue  "`, we need to return `"blue is sky the"`. The key challenges are:
+
+1. **Multiple consecutive spaces**: Input may have leading, trailing, or multiple spaces between words
+2. **Word order reversal**: The last word should become the first, second-last becomes second, etc.
+3. **Single space between words**: The output should have exactly one space between each word
+
+### Why this works
+
+The solution uses an **accumulator array with pointer tracking** to achieve this:
+
+1. **Trim first**: Remove leading and trailing spaces from the input
+2. **Track spaces with a flag**: Use `isSpaceSeen` to detect when we've hit a space between words
+3. **Build words incrementally**: When we see a non-space character, append it to the current word in the accumulator
+4. **Move to next word**: When we hit a space (and haven't seen one recently), move the pointer to the next slot
+
+This approach is O(n) time and O(n) space, processing each character exactly once.
+
+### Algorithm Steps
+
+1. Trim the input string to remove leading/trailing spaces
+2. Initialize an empty array to store words, a pointer at position 0, and a flag for spaces
+3. Iterate through each character:
+   - If it's a space and we haven't seen a space recently, increment the pointer (move to next word)
+   - If it's not a space, append the character to the word at the current pointer position
+4. After processing, reverse the array and join with single spaces
+
+### Visualization
+
+Let's trace through `"  the sky is   blue  "`:
+
+```
+Input: "  the sky is   blue  "
+
+Step 1: Trim → "the sky is   blue"
+
+Step 2: Iterate through trimmed string
+
+Index | Char | Action                              | Accumulator        | Pointer | isSpaceSeen
+------|------|--------------------------------------|--------------------|---------|-------------
+  0   | 't'  | non-space, append                   | ["the"]            | 0       | false
+  1   | 'h'  | non-space, append                   | ["the"]            | 0       | false
+  2   | 'e'  | non-space, append                   | ["the"]            | 0       | false
+  3   | ' '  | space, !isSpaceSeen → pointer++     | ["the"]            | 1       | true
+  4   | 's'  | non-space, append                   | ["the","s"]        | 1       | false
+  5   | 'k'  | non-space, append                   | ["the","sk"]       | 1       | false
+  6   | 'y'  | non-space, append                   | ["the","sky"]      | 1       | false
+  7   | ' '  | space, !isSpaceSeen → pointer++     | ["the","sky"]      | 2       | true
+  8   | 'i'  | non-space, append                   | ["the","sky","i"]  | 2       | false
+  9   | 's'  | non-space, append                   | ["the","sky","is"] | 2       | false
+  10  | ' '  | space, !isSpaceSeen → pointer++     | ["the","sky","is"] | 3       | true
+  11  | ' '  | space, isSpaceSeen → skip           | ["the","sky","is"] | 3       | true
+  12  | ' '  | space, isSpaceSeen → skip           | ["the","sky","is"] | 3       | true
+  13  | 'b'  | non-space, append                   | ["the","sky","is","b"] | 3 | false
+  14  | 'l'  | non-space, append                   | ["the","sky","is","bl"]| 3 | false
+  15  | 'u'  | non-space, append                   | ["the","sky","is","blu"]| 3| false
+  16  | 'e'  | non-space, append                   | ["the","sky","is","blue"]| 3| false
+
+Step 3: Reverse and join
+  accumulator = ["the", "sky", "is", "blue"]
+  reversed = ["blue", "is", "sky", "the"]
+  result = "blue is sky the" ✓
+```
+
+### Key Pattern / Code Template
+
+```typescript
+function reverseWords(s: string): string {
+    const trimmedS = s.trim();
+    const accumulator: string[] = [];
+    let isSpaceSeen = false;
+    let pointer = 0;
+
+    for (let i = 0; i < trimmedS.length; i++) {
+        if (trimmedS[i] === ' ' && !isSpaceSeen) {
+            // First space between words - move to next slot
+            pointer++;
+            isSpaceSeen = true;
+        } else if (trimmedS[i] !== ' ') {
+            // Non-space character - build the word
+            if (!accumulator[pointer]) accumulator[pointer] = '';
+            accumulator[pointer] = accumulator[pointer] + trimmedS[i];
+            isSpaceSeen = false;
+        }
+        // If isSpaceSeen is true and char is also space, skip (multiple spaces)
+    }
+
+    return accumulator.reverse().join(' ');
+};
+```
+
+### When to use this pattern
+
+Use this **accumulator array with space tracking** pattern when:
+
+- Reversing word order in a string
+- Handling multiple spaces (leading, trailing, or between words)
+- You need O(n) time without using built-in split/reverse functions effectively
+- Building an array of words character-by-character
+
+**Alternative simpler approach:**
+
+Many languages have built-in split and reverse that make this trivial:
+```typescript
+// JavaScript one-liner (not O(1) space)
+return s.trim().split(/\s+/).reverse().join(' ');
+```
+
+This uses regex to split on one or more whitespace characters. The manual approach is useful for understanding the underlying mechanics and for languages without convenient string manipulation.
+
+**Variations to know:**
+- Reverse characters in each word (not the word order) - requires a different approach
+- Handle Unicode/special characters - may need to use proper character handling
+- In-place reversal without extra space - requires two-pass reversal (reverse entire string, then reverse each word)
 
 ## Solution
 
 ```ts
 function reverseWords(s: string): string {
-  return s
-    .split(" ")
-    .filter((word) => word !== "")
-    .reverse()
-    .join(" ");
-}
+    const trimmedS = s.trim();
+    const accumulator = [];
+    let isSpaceSeen = false;
+    let pointer = 0;
 
-reverseWords("the sky is blue"); // blue is sky the
-reverseWords("  hello world  "); // world hello
-reverseWords("a good  example"); // example good a
+    for (let i = 0; i < trimmedS.length; i++) {
+        if (trimmedS[i] === ' ' && !isSpaceSeen) {
+            pointer++;
+            isSpaceSeen = true;
+        } else if (trimmedS[i] !== ' ') {
+            if (!accumulator[pointer]) accumulator[pointer] = '';
+            accumulator[pointer] = accumulator[pointer] + trimmedS[i];
+            isSpaceSeen = false;
+        }
+    }
+
+    return accumulator.reverse().join(' ');
+};
 ```

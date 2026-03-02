@@ -4,18 +4,157 @@ title: 11. Container with most water
 
 ## Approach
 
-Two pointers.
+### What is this problem?
 
-We can solve this problem using the two-pointer approach:
+This problem asks us to find the container that can hold the most water, given an array of non-negative integers where each element represents the height of a vertical line at that position. The container is formed by two lines (at positions i and j) and is bounded by the shorter of the two heights.
 
-1. Start with two pointers, one at the beginning (left) and one at the end (right) of the height array.
-2. Calculate the area between the two pointers: the width is the difference between the indices of left and right, and the height is the smaller of the two values at height[left] and height[right].
-3. Move the pointer pointing to the shorter line inward:
-   - If the line at left is shorter, increment left to potentially find a taller line.
-   - If the line at right is shorter, decrement right to potentially find a taller line.
-4. Continue this until the two pointers meet, updating the maximum area at each step.
+The area (water held) is calculated as:
+- **Width**: The distance between the two lines = `j - i`
+- **Height**: The shorter of the two lines = `min(height[i], height[j])`
+- **Area**: `width * height`
 
-The final result will be the largest area found during this process.
+For example, with heights `[1, 8, 6, 2, 5, 4, 8, 3, 7]`:
+- Lines at index 1 (height 8) and index 8 (height 7)
+- Width = 8 - 1 = 7
+- Height = min(8, 7) = 7
+- Area = 7 × 7 = 49 (maximum!)
+
+### Why this works
+
+The two-pointer approach works based on a key insight:
+
+1. **Start with maximum width**: Begin with pointers at both ends (maximum possible width)
+2. **Always move the shorter line**: If we move the taller line inward, the width decreases and the height is still limited by the shorter line — so the area can only decrease or stay the same
+3. **Moving the shorter line might find a taller one**: By moving the shorter line, we might find a line that's tall enough to compensate for the reduced width
+
+This is a greedy approach that guarantees we find the maximum area because:
+- Any container using the current left pointer with any right pointer to its left would have less width
+- Any container using the current right pointer with any left pointer to its right would have less width
+- So we can safely "eliminate" the shorter line and look for better options
+
+This approach achieves O(n) time complexity with a single pass.
+
+### Algorithm Steps
+
+1. Initialize two pointers: `left` at index 0, `right` at the last index
+2. Initialize `result` to track the maximum area found
+3. While `left` and `right` haven't met:
+   - Calculate the current area: `(right - left) * min(height[left], height[right])`
+   - Update `result` with the maximum of current area and result
+   - Move the pointer with the shorter height:
+     - If `height[left] < height[right]`, increment `left`
+     - Otherwise, decrement `right`
+4. Return `result`
+
+### Visualization
+
+Let's trace through `[1, 8, 6, 2, 5, 4, 8, 3, 7]`:
+
+```
+Input: height = [1, 8, 6, 2, 5, 4, 8, 3, 7]
+Indices:       0  1  2  3  4  5  6  7  8
+
+Initial: left = 0, right = 8
+Visual:  |       |           |
+         1        8          7
+
+Step | left | right | heights       | width | height | area | move
+-----|------|--------|---------------|-------|--------|------|------
+  1  |  0   |   8    | [1] and [7]   |   8   |   1    |  8   | left++ (1<7)
+  2  |  1   |   8    | [8] and [7]   |   7   |   7    |  49  | right-- (8>=7)
+  3  |  1   |   7    | [8] and [3]   |   6   |   3    |  18  | right-- (8>=3)
+  4  |  1   |   6    | [8] and [8]   |   5   |   8    |  40  | right-- (8>=8)
+  5  |  1   |   5    | [8] and [4]   |   4   |   4    |  16  | right-- (8>=4)
+  6  |  1   |   4    | [8] and [5]   |   3   |   5    |  15  | right-- (8>=5)
+  7  |  1   |   3    | [8] and [2]   |   2   |   2    |   4  | right-- (8>=2)
+  8  |  1   |   2    | [8] and [6]   |   1   |   6    |   6  | right-- (8>=6)
+  9  |  1   |   1    | left === right |  --   |  --    |  -- | done
+
+Maximum area found: 49 ✓
+```
+
+Box diagram visualization:
+
+```
+Initial state (max width):
+Index:    0   1   2   3   4   5   6   7   8
+Height:  [1] [8] [6] [2] [5] [4] [8] [3] [7]
+          █               █
+          █   █████       █
+          █   █████   █   █
+          █   █████   █   █
+          █   █████   ███ █
+          █   █████   ███ █
+          █   █████   ███ █
+          █   █████   ███ ███
+          █   █████████████
+          
+          L               R
+          width = 8, height = 1, area = 8
+
+After moving left (1<7), we find better area:
+          
+Index:    0   1   2   3   4   5   6   7   8
+Height:  [1] [8] [6] [2] [5] [4] [8] [3] [7]
+              █               █
+              █   █████       █
+              █   █████   █   █
+              █   █████   █   █
+              █   █████   ███ █
+              █   █████   ███ █
+              █   █████   ███ █
+              █   █████   ███ ███
+              █   █████████████
+              
+              L           R
+              width = 7, height = 7, area = 49 ✓ MAXIMUM!
+```
+
+### Key Pattern / Code Template
+
+```typescript
+function maxArea(height: number[]): number {
+  let left = 0;
+  let right = height.length - 1;
+  let result = 0;
+
+  while (left !== right) {
+    // Calculate current area
+    const width = right - left;
+    const h = Math.min(height[left], height[right]);
+    result = Math.max(result, width * h);
+
+    // Move the pointer with shorter height
+    // Moving taller height can only decrease area
+    if (height[left] < height[right]) {
+      left++;
+    } else {
+      right--;
+    }
+  }
+
+  return result;
+}
+```
+
+### When to use this pattern
+
+Use this **two-pointer from ends** pattern when:
+
+- Finding maximum area/volume between two boundary elements
+- Problems where the "container" is defined by two boundaries
+- You need O(n) solution without checking all pairs (which would be O(n²))
+- The constraint is limited by the shorter/more restrictive side
+
+**Key insight to remember:**
+- Always move the pointer with the smaller value
+- This is a greedy approach — we make the locally optimal move hoping it leads to a globally optimal solution
+- It works because moving the larger value can never improve the result (area is limited by the shorter side)
+
+**Variations to know:**
+- **Trapping Rain Water (42)**: Similar concept but tracks water level at each position
+- **Longest Container**: Same approach with different interpretation of "container"
+- If you need the actual indices (not just the max area), track them alongside the result
 
 ## Solution
 
