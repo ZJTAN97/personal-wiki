@@ -1,0 +1,132 @@
+---
+title: BinaryGap
+---
+
+Problem Description [here](https://app.codility.com/programmers/lessons/1-iterations/binary_gap/)
+
+## Approach
+
+### What is This Problem?
+
+This problem asks us to find the longest sequence of consecutive zeros (`0`) in the binary representation of a positive integer `N`, where this sequence is surrounded by ones (`1`). This is known as a "binary gap."
+
+For example:
+- `N = 9` (binary: `1001`) → gap of length 2 (the zeros between the two 1s)
+- `N = 15` (binary: `1111`) → no gaps (no zeros between ones)
+- `N = 20` (binary: `10100`) → gap of length 1 (the single zero between 1 and 100)
+
+### Why This Works
+
+The key insight is that we only care about zeros that appear **between** ones. We can think of this as tracking:
+1. When we see a `1` → start a new potential gap (or end current gap)
+2. When we see a `0` → we're inside a gap, count it
+3. When we see another `1` after zeros → gap ends, record its length
+
+We don't need to convert to a string — we can work directly with bit operations using bit shifts.
+
+### Algorithm Steps
+
+1. **Convert to binary string** (or use bit operations)
+2. **Track two variables**:
+   - `currentGap`: zeros counted since last `1`
+   - `maxGap`: longest gap found so far
+3. **Iterate through each bit**:
+   - If current bit is `1`:
+     - Update `maxGap` if `currentGap` is larger
+     - Reset `currentGap` to 0 (start counting new gap)
+   - If current bit is `0`:
+     - Increment `currentGap` (we're inside a gap)
+4. **Return** `maxGap`
+
+### Visualization
+
+Let's trace through `N = 1041` (binary: `10000010001`):
+
+```
+Binary: 1 0 0 0 0 0 1 0 0 0 1
+Index:  0 1 2 3 4 5 6 7 8 9 10
+
+Step 0: currentGap = 0, maxGap = 0
+Step 1: Bit '1' → maxGap = 0, currentGap = 0
+Step 2: Bit '0' → currentGap = 1
+Step 3: Bit '0' → currentGap = 2
+Step 4: Bit '0' → currentGap = 3
+Step 5: Bit '0' → currentGap = 4
+Step 6: Bit '0' → currentGap = 5
+Step 7: Bit '1' → maxGap = max(0,5) = 5, currentGap = 0
+Step 8: Bit '0' → currentGap = 1
+Step 9: Bit '0' → currentGap = 2
+Step 10: Bit '0' → currentGap = 3
+Step 11: Bit '1' → maxGap = max(5,3) = 5, currentGap = 0
+
+Result: maxGap = 5
+```
+
+### Key Pattern
+
+```ts
+function binaryGap(N: number): number {
+    const binary = N.toString(2);
+    let maxGap = 0;
+    let currentGap = 0;
+
+    for (const bit of binary) {
+        if (bit === '1') {
+            maxGap = Math.max(maxGap, currentGap);
+            currentGap = 0;
+        } else {
+            currentGap++;
+        }
+    }
+
+    return maxGap;
+}
+
+// Alternative: Using bit operations (no string conversion)
+function binaryGapBitwise(N: number): number {
+    let maxGap = 0;
+    let currentGap = 0;
+    
+    while (N > 0) {
+        if ((N & 1) === 1) {
+            maxGap = Math.max(maxGap, currentGap);
+            currentGap = 0;
+        } else {
+            currentGap++;
+        }
+        N >>= 1;
+    }
+    
+    return maxGap;
+}
+```
+
+### When to Use This Pattern
+
+Use **binary gap analysis** when:
+- Finding longest sequence between events in binary/bits
+- Analyzing bit patterns in integers
+- Problems involving consecutive elements of the same type
+
+This pattern also applies to finding longest streak of any character between two specific markers — extendable to any sequential data where you track runs of elements.
+
+## Solution
+
+```ts
+function solution(N: number): number {
+    const binary = N.toString(2);
+    let maxGap = 0;
+    let currentGap = 0;
+
+    for (const bit of binary) {
+        if (bit === '1') {
+            maxGap = Math.max(maxGap, currentGap);
+            currentGap = 0;
+        } else {
+            currentGap++;
+        }
+    }
+
+    return maxGap;
+}
+```

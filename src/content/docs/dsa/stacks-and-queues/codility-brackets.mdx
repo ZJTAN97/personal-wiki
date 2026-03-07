@@ -1,0 +1,138 @@
+---
+title: Brackets
+---
+
+Problem Description [here](https://app.codility.com/programmers/lessons/7-stacks_and_queues/brackets/)
+
+## Approach
+
+### What is This Problem?
+
+This problem asks us to determine if a string containing only the characters `{`, `}`, `[`, `]`, `(`, `)` is properly nested. A string is properly nested when:
+- Every opening bracket has a corresponding closing bracket
+- Brackets are closed in the correct order (last opened is first closed)
+
+### Why This Works
+
+The key insight is that brackets follow a **LIFO (Last In, First Out)** pattern — exactly what a stack is designed for. When we see an opening bracket, we push it onto the stack. When we see a closing bracket, it must match the most recent opening bracket (top of the stack) to be valid.
+
+If at any point:
+1. We encounter a closing bracket but the stack is empty → there's nothing to close → invalid
+2. The closing bracket doesn't match the top of stack → wrong closing order → invalid
+
+At the end, if all opening brackets were properly closed, the stack will be empty.
+
+### Algorithm Steps
+
+1. **Initialize** an empty stack
+2. **Create a mapping** from closing brackets to their corresponding opening brackets
+3. **Iterate through each character** in the string:
+   - If it's an opening bracket (`{`, `[`, `(`): push onto stack
+   - If it's a closing bracket: pop from stack and check if it matches
+     - If mismatch or stack empty: return 0 (invalid)
+4. **After iteration**, return 1 if stack is empty (all matched), 0 otherwise
+
+### Visualization
+
+Let's trace through `{ [ ( ) ] }`:
+
+```
+Step 1: '{' → Opening bracket
+        Stack: ['{']
+        
+Step 2: '[' → Opening bracket
+        Stack: ['{', '[']
+        
+Step 3: '(' → Opening bracket
+        Stack: ['{', '[', '(']
+        
+Step 4: ')' → Closing bracket
+        Top of stack: '(' matches ')' ✓
+        Stack after pop: ['{', '[']
+        
+Step 5: ']' → Closing bracket
+        Top of stack: '[' matches ']' ✓
+        Stack after pop: ['{']
+        
+Step 6: '}' → Closing bracket
+        Top of stack: '{' matches '}' ✓
+        Stack after pop: []
+
+Result: Stack is empty → Valid (return 1)
+```
+
+Example of invalid case `{ [ ( ] ) }`:
+
+```
+Step 1: '{' → Stack: ['{']
+Step 2: '[' → Stack: ['{', '[']
+Step 3: '(' → Stack: ['{', '[', '(']
+Step 4: ']' → Closing bracket
+        Top of stack: '(' but found ']' → MISMATCH!
+        
+Result: Invalid (return 0)
+```
+
+### Key Pattern
+
+```ts
+function isValidBrackets(S: string): boolean {
+    const stack: string[] = [];
+    const bracketMap: { [key: string]: string } = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+
+    for (const char of S) {
+        if (char === '{' || char === '[' || char === '(') {
+            stack.push(char);
+        } else if (bracketMap[char]) {
+            if (stack.pop() !== bracketMap[char]) {
+                return false;
+            }
+        }
+    }
+
+    return stack.length === 0;
+}
+```
+
+### When to Use This Pattern
+
+Use a **stack-based bracket matching** when:
+- Checking if parentheses/brackets are balanced or properly nested
+- Validating HTML/XML tags (similar concept with different data)
+- Problems involving nested structures where order matters
+- Any scenario requiring "last seen, first processed" behavior
+
+This is a fundamental pattern that appears in expression evaluation, syntax parsing, and many compiler/interpreter implementations.
+
+## Solution
+
+```ts
+function solution(S: string): number {
+
+    if (S.length === 0) return 1;
+
+    const stack: string[] = [];
+
+    const bracketMap: { [key: string]: string } = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+
+    for (const char of S) {
+        if (char === "{" || char === "[" || char === "(") {
+            stack.push(char);
+        } else if (bracketMap[char]) {
+            if (stack.pop() !== bracketMap[char]) {
+                return 0
+            }
+        }
+    }
+
+    return stack.length === 0 ? 1 : 0;
+}
+```

@@ -1,0 +1,100 @@
+---
+title: Count Div
+---
+
+Problem Description [here](https://app.codility.com/programmers/lessons/5-prefix_sums/count_div/)
+
+## Approach
+
+### What is This Problem?
+
+Given two integers A and B (A ≤ B) and a positive integer K, count how many integers in the range [A, B] are divisible by K.
+
+For example:
+- A=6, B=11, K=2 → count = 3 (numbers 6, 8, 10)
+- A=0, B=20, K=5 → count = 5 (numbers 0, 5, 10, 15, 20)
+
+### Why This Works
+
+The key insight is using **integer division to count multiples**:
+
+Instead of iterating through the entire range (O(B-A) time), we use:
+- Numbers divisible by K up to B: `Math.floor(B/K)` (including 0)
+- Numbers divisible by K up to A-1: `Math.floor((A-1)/K)`
+- Subtract gives count in [A, B]: `Math.floor(B/K) - Math.floor((A-1)/K)`
+
+The **special case for A=0** occurs because when A=0, (A-1)/K = -1/K = -0.xxx → floor = -1, so subtraction adds 1 extra. The direct formula: `Math.floor(B/K) + 1` (includes 0 as a valid multiple).
+
+### Algorithm Steps
+
+1. **Handle edge case**: If A === 0 → return `Math.floor(B/K) + 1`
+2. **Otherwise**: return `Math.floor(B/K) - Math.floor((A-1)/K)`
+
+### Visualization
+
+Let's trace through A=6, B=11, K=2:
+
+```
+Numbers divisible by 2 up to B: floor(11/2) = 5
+  Multiples: 0, 2, 4, 6, 8, 10 → 6 numbers, but floor gives index count
+
+Numbers divisible by 2 up to A-1: floor(5/2) = 2
+  Multiples: 0, 2, 4 → 3 numbers
+
+Count = 5 - 2 = 3 ✓
+  Valid numbers: 6, 8, 10
+
+Let's verify by correlation:
+floor(B/K) counts multiples at positions: 0, 1, 2, 3, 4, 5 → 6 values
+floor((A-1)/K) counts multiples at positions: 0, 1, 2 → 3 values
+Difference: positions 3, 4, 5 → 3 values (6, 8, 10)
+```
+
+Another example with A=0, B=10, K=3:
+
+```
+floor(B/K) = floor(10/3) = 3
+Add 1 for zero: 3 + 1 = 4
+
+Multiples: 0, 3, 6, 9 → 4 numbers ✓
+```
+
+### Key Pattern
+
+```ts
+// Mathematical counting using integer division
+function countDiv(A: number, B: number, K: number): number {
+    if (A === 0) {
+        return Math.floor(B / K) + 1;
+    }
+    return Math.floor(B / K) - Math.floor((A - 1) / K);
+}
+
+// One-liner (handles A=0 correctly as well)
+function countDivOneLiner(A: number, B: number, K: number): number {
+    return Math.floor(B / K) - Math.floor((A - 1) / K);
+}
+```
+
+### When to Use This Pattern
+
+Use **integer division for counting multiples** when:
+- Counting numbers divisible by K in any range [A, B]
+- Finding first/last multiple in a range
+- Problems requiring count of evenly spaced values in intervals
+- When you need O(1) solution instead of O(n) iteration
+
+This mathematical approach avoids iteration entirely and provides constant-time solutions for range-based counting problems.
+
+## Solution
+
+```ts
+function solution(A: number, B: number, K: number): number {
+
+    if(A === 0) {
+        return Math.floor(B / K) + 1;
+    }
+
+    return Math.floor(B/K) - Math.floor ((A-1) / K);
+}
+```
