@@ -1,0 +1,122 @@
+---
+title: Passing Cars
+---
+
+Problem Description [here](https://app.codility.com/programmers/lessons/5-prefix_sums/passing_cars)
+
+## What is This Problem?
+
+We are given an array `A` consisting of `N` integers where:
+- `A[i] = 0` represents a car traveling **East**
+- `A[i] = 1` represents a car traveling **West**
+
+A **passing** pair is defined as a pair of indices `(P, Q)` such that:
+- `0 ≤ P < Q < N`
+- `A[P] = 0` (car P goes East)
+- `A[Q] = 1` (car Q goes West)
+
+The goal is to count the total number of passing pairs. If the count exceeds 1,000,000,000, return `-1`.
+
+## Why This Works
+
+A naive approach would check every possible pair `(P, Q)` which costs O(N²). The key insight is realizing that:
+- **Cars going West (1) are the "receivers"** - each West-bound car will pass *all* East-bound cars that appeared before it
+- **Cars going East (0) are the "contributors"** - each East-bound car will be passed by *all* West-bound cars that appear after it
+
+Instead of counting pairs, we can:
+1. Count how many East-bound cars we've seen so far as we traverse
+2. When we encounter a West-bound car, it forms a passing pair with *every* East-bound car seen before it
+3. This transforms the problem into a single pass with O(N) time
+
+## Algorithm Steps
+
+1. Initialize `east_count = 0` and `passing_pairs = 0`
+2. Iterate through the array from left to right:
+   - If `A[i] == 0` (East-bound): increment `east_count`
+   - If `A[i] == 1` (West-bound): add `east_count` to `passing_pairs` (this car passes all previously seen East-bound cars)
+3. After the loop, if `passing_pairs > 1,000,000,000`, return `-1`; otherwise return `passing_pairs`
+
+## Visualization
+
+Let's trace through a concrete example: `A = [0, 1, 0, 1, 1]`
+
+```
+Index:     0   1   2   3   4
+Value:     0   1   0   1   1
+Direction: E   W   E   W   W
+```
+
+**Step-by-step iteration:**
+
+```
+i=0, A[0]=0 (East)
+east_count = 0 → 1
+passing_pairs = 0
+[East seen: 1]
+
+i=1, A[1]=1 (West)
+This West car passes all 1 East car before it.
+passing_pairs = 0 + 1 = 1
+[East seen: 1]
+
+i=2, A[2]=0 (East)
+east_count = 1 → 2
+passing_pairs = 1
+[East seen: 2]
+
+i=3, A[3]=1 (West)
+This West car passes all 2 East cars before it.
+passing_pairs = 1 + 2 = 3
+[East seen: 2]
+
+i=4, A[4]=1 (West)
+This West car passes all 2 East cars before it.
+passing_pairs = 3 + 2 = 5
+[East seen: 2]
+
+Final result: 5 passing pairs
+```
+
+**Breaking down the 5 pairs:**
+- Car at index 0 (E) passes cars at indices 1, 3, 4 → 3 pairs
+- Car at index 2 (E) passes cars at indices 3, 4 → 2 pairs
+- Total: 3 + 2 = 5
+
+## Key Pattern
+
+**Running Counter + Accumulation**: Instead of explicitly counting pairs, maintain a running count of a "resource" (East-bound cars) that gets consumed by later elements (West-bound cars). Each time you encounter the consuming element, add the current resource count to the total.
+
+## When to Use This Pattern
+
+Use this approach when:
+- Counting conditional pairs where the pair condition depends on **order** (P < Q) and **values** (specific combination like 0 before 1)
+- The total pair count can be computed incrementally as you process elements sequentially
+- You can maintain a running count of "eligible" elements that contribute to future pairs
+- Avoiding O(N²) brute-force is necessary for large N
+
+**Classic applications:**
+- Counting inversions (two elements out of order)
+- Counting pairs where one element satisfies a condition relative to all previously seen elements
+- Any problem where you need to count ordered pairs with specific value combinations
+
+## Solution
+
+```javascript
+function solution(A) {
+    let eastCount = 0
+    let passingPairs = 0
+    
+    for (let i = 0; i < A.length; i++) {
+        if (A[i] === 0) {
+            eastCount++
+        } else {
+            passingPairs += eastCount
+            if (passingPairs > 1000000000) {
+                return -1
+            }
+        }
+    }
+    
+    return passingPairs
+}
+```
