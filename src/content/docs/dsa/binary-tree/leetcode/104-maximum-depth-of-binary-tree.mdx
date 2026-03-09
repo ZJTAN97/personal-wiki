@@ -2,7 +2,70 @@
 title: 104. Maximum Depth of Binary Tree
 ---
 
-## Soution
+## Approach
+
+### What is This Problem?
+
+Given the root of a binary tree, return its **maximum depth** - the number of nodes along the longest path from the root down to the farthest leaf node.
+
+### Why This Works
+
+The depth of a tree is defined recursively:
+- An empty tree has depth 0.
+- A non-empty tree's depth is 1 (for the root) plus the maximum depth of its left and right subtrees.
+
+This works because:
+- Each level adds 1 to the depth count.
+- The longest path will be determined by the subtree with greater depth.
+- Recursion naturally explores all root-to-leaf paths and returns the maximum.
+
+### Algorithm Steps
+
+1. Base case: if root is null, return 0.
+2. Recursively compute depth of left subtree.
+3. Recursively compute depth of right subtree.
+4. Return 1 + max(leftDepth, rightDepth).
+
+### Visualization
+
+Example tree:
+```
+      3
+     / \
+    9  20
+       / \
+      15  7
+```
+
+Depth calculation:
+
+```
+maxDepth(3):
+  left = maxDepth(9) → leaf → returns 1
+  right = maxDepth(20):
+    left = maxDepth(15) → leaf → 1
+    right = maxDepth(7) → leaf → 1
+    right = 1 + max(1,1) = 2
+  return 1 + max(1,2) = 3
+```
+
+Longest path: 3 → 20 → 15 (or 3 → 20 → 7), depth = 3 nodes.
+
+### Key Pattern
+
+- **Recursive tree traversal**: Process node, then children
+- **Post-order style**: Compute child depths before current node's result
+- **Base case**: null node returns 0
+- **Combine results**: 1 + max(left, right)
+
+### When to Use This Pattern
+
+- Computing height/depth of any tree (binary, n-ary)
+- When you need to know the longest root-to-leaf path
+- Often used in balanced tree checks (AVL, etc.)
+- Adaptable to compute other aggregations (min depth, max sum path, etc.)
+
+## Solution
 
 ```ts
 class TreeNode {

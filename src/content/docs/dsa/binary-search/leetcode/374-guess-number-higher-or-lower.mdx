@@ -10,9 +10,83 @@ Problem description can be found [here](https://leetcode.com/problems/guess-numb
 
 ## Approach
 
-Honestly this question phrasing is dam weird for a question simply asking for Binary Search
+### What is This Problem?
 
-This question just tests whether you can implement binary search.
+We are given an integer `n` and must guess a secret number between 1 and `n`. We have a helper function `guess(num)` that returns:
+- `-1` if the secret is lower than `num`
+- `1` if the secret is higher than `num`
+- `0` if `num` is the secret
+
+We need to return the secret number.
+
+### Why This Works
+
+This is a classic **binary search** problem. The search space is the sorted range `[1, n]`. At each step we query the middle element and narrow the range based on the feedback. Because the feedback is consistent (secret is lower/higher), we can eliminate half the search space each iteration, achieving O(log n) time.
+
+Binary search works here because:
+- The search space is ordered (1 to n).
+- The feedback tells us which half contains the secret.
+- The problem guarantees the secret exists within the range.
+
+### Algorithm Steps
+
+1. Initialize `left = 1`, `right = n`.
+2. While `left <= right`:
+   - Compute `mid = floor((left + right) / 2)`.
+   - Query `result = guess(mid)`.
+   - If `result === 0`, return `mid`.
+   - If `result === -1`, set `right = mid - 1`.
+   - If `result === 1`, set `left = mid + 1`.
+3. The loop will eventually converge to the secret.
+
+### Visualization
+
+Let's assume secret = 6, with `n = 10`.
+
+Initial range: `[1, 10]`
+
+Step 1: 
+- mid = floor((1+10)/2) = 5
+- guess(5) returns 1 (secret > 5)
+- New range: `[6, 10]`
+
+Step 2:
+- mid = floor((6+10)/2) = 8
+- guess(8) returns -1 (secret < 8)
+- New range: `[6, 7]`
+
+Step 3:
+- mid = floor((6+7)/2) = 6
+- guess(6) returns 0 → found!
+
+Range evolution:
+```
+[1,10] → mid=5 (too low) → [6,10]
+[6,10] → mid=8 (too high) → [6,7]
+[6,7]  → mid=6 (correct)
+```
+
+### Key Pattern
+
+- **Binary search template**:
+  ```ts
+  while (left <= right) {
+    mid = Math.floor((left+right)/2);
+    if (condition(mid)) return mid;
+    else if (target < mid) right = mid - 1;
+    else left = mid + 1;
+  }
+  ```
+- **Search space halving**: Each step reduces the range by half.
+- **Feedback-driven adjustments**: The `guess` result dictates direction.
+
+### When to Use This Pattern
+
+- Searching in a sorted/ordered space (array, range, monotonic function)
+- Finding a specific value when you can compare/make decisions
+- Problems with clear "too low/too high/correct" feedback
+- Classic applications: finding insertion point, element existence, threshold values
+
 
 ## Solution
 

@@ -2,6 +2,74 @@
 title: 872. Leaf Similar Trees
 ---
 
+## Approach
+
+### What is This Problem?
+
+Given two binary trees, we need to determine if they are **leaf-similar** - meaning the sequence of leaf node values from left to right is identical in both trees.
+
+A leaf node has no children (both left and right are null).
+
+### Why This Works
+
+Depth-First Search (DFS) naturally visits nodes in a left-to-right order. By collecting leaf nodes during DFS, we get the exact left-to-right leaf sequence. Comparing the sequences (as arrays) tells us if the trees are leaf-similar.
+
+- DFS goes deep before wide, ensuring we visit all leaves in a branch before moving to the next branch.
+- By collecting leaves when both children are null, we capture only leaf nodes.
+- The order of concatenation `dfs(left).concat(dfs(right))` ensures left subtree leaves come before right subtree leaves.
+
+### Algorithm Steps
+
+1. For each tree (root1 and root2), perform a DFS traversal
+2. During traversal:
+   - If node is null, return empty array
+   - Recursively get leaves from left and right subtrees
+   - If node is a leaf (no children), return array containing its value
+   - Otherwise, concatenate left and right leaf arrays
+3. Compare the two resulting leaf arrays (or their stringified form)
+
+### Visualization
+
+Consider tree1:
+```
+    1
+   / \
+  2   3
+ / \
+4   5
+```
+
+Leaf order: 4 → 5 → 3
+
+Step-by-step DFS:
+
+```
+Call dfs(1):
+  dfs(2):
+    dfs(4): leaf → [4]
+    dfs(5): leaf → [5]
+    node 2: concat([4], [5]) = [4,5]
+  dfs(3): leaf → [3]
+  node 1: concat([4,5], [3]) = [4,5,3]
+Result: [4,5,3]
+```
+
+For tree2, if it yields same sequence, they are leaf-similar.
+
+### Key Pattern
+
+- **Recursive DFS**: Base case for null, handle leaf, combine results
+- **Leaf identification**: `!node.left && !node.right`
+- **Order preservation**: Use concatenation (or push) to maintain left-to-right order
+- **Sequence comparison**: After obtaining both sequences, compare element by element
+
+### When to Use This Pattern
+
+- Need to compare leaf node sequences between trees
+- Problems involving only leaf nodes (collect, sum, etc.)
+- When tree structure matters but only leaves contribute to result
+- Can be adapted to collect other node types (e.g., all nodes at certain depth)
+
 ## Solution
 
 ```ts

@@ -10,7 +10,68 @@ Problem description can be found [here](https://leetcode.com/problems/longest-su
 
 ## Approach
 
-Dynamic Sliding Window
+### What is This Problem?
+
+Given a binary array `nums`, we may delete **exactly one element** (any element) from the array. After deletion, we want the longest contiguous subarray that contains only `1`s. Return the length of that subarray.
+
+If there are no zeros, we must delete one `1`, so the result is the number of consecutive `1`s minus one.
+
+### Why This Works (Dynamic Sliding Window)
+
+We can model the problem as: **Find the longest subarray that contains at most one 0**. Why? Because if we have at most one zero inside a window, we can delete that zero (or if there's no zero we can delete any `1` but we still need to account for the mandatory deletion). The resulting subarray of `1`s after deletion has length equal to window length minus the number of deletions (1). So maximizing window length with at most one zero automatically gives the maximum possible after deletion.
+
+A **dynamic sliding window** (variable-size) is perfect: we expand the right end, and when the window contains more than one zero, we shrink from the left until at most one zero remains. This maintains a valid window and ensures we consider all possible subarrays O(n) time.
+
+### Algorithm Steps
+
+1. Initialize `left = 0`, `zeroCount = 0`, `maxLen = 0`.
+2. Iterate `right` from 0 to n-1:
+   - If `nums[right] === 0`, increment `zeroCount`.
+   - While `zeroCount > 1`:
+     - If `nums[left] === 0`, decrement `zeroCount`.
+     - Increment `left`.
+   - Now window `[left, right]` has at most one zero.
+   - Update `maxLen = max(maxLen, right - left)`. (Note: we use `right-left` because one element will be deleted.)
+3. Return `maxLen`.
+
+### Visualization
+
+Example: `nums = [0,1,1,1,0,1,1,0,1]`
+
+Process step-by-step:
+
+```
+R0 (0): zeros=1 → window [0..0] → max = 0-0 = 0
+R1 (1): zeros=1 → window [0..1] → max = max(0,1-0)=1
+R2 (1): zeros=1 → window [0..2] → max = max(1,2-0)=2
+R3 (1): zeros=1 → window [0..3] → max = max(2,3-0)=3
+R4 (0): zeros=2 → shrink until zeros≤1:
+  left moves to 1 (removed 0 at index0) → zeros=1, left=1
+  window [1..4] → max = max(3,4-1)=3
+R5 (1): zeros=1 → window [1..5] → max = max(3,5-1)=4 ✓
+R6 (1): zeros=1 → window [1..6] → max = max(4,6-1)=5 ✓
+R7 (0): zeros=2 → shrink:
+  left=1(1)→left=2; left=2(1)→left=3; left=3(1)→left=4; left=4(0)→zeros=1,left=5
+  window [5..7] → max = max(5,7-5)=5
+R8 (1): zeros=1 → window [5..8] → max = max(5,8-5)=5
+Final max = 5 (window [1..6] of length 6, after deleting the zero at index4 gives 5 consecutive 1s)
+```
+
+### Key Pattern
+
+- **Variable-size sliding window**: window expands with `right`, contracts `left` to maintain constraint.
+- **Constraint**: at most one zero inside the window.
+- **Track count** of zeros (or other condition) and adjust left pointer.
+- **Window length calculation**: `right - left` because one element will be removed (the zero or any 1 if no zero).
+- **O(n) time**, O(1) space.
+
+### When to Use This Pattern
+
+- Need longest/shortest subarray satisfying a condition that can be maintained with a counter.
+- The condition is "at most K of something" (here K=1 zero).
+- Problems where you can "delete" or "replace" a limited number of elements.
+- Common pattern: "Longest subarray with at most K zeros/ones", "Max consecutive ones after flipping K zeros", etc.
+
 
 ## Solution
 
