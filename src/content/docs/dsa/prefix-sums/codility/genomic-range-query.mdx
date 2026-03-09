@@ -1,0 +1,167 @@
+---
+title: Genomic Range Query
+---
+
+Problem Description [here](https://app.codility.com/programmers/lessons/5-prefix_sums/genomic_range_query/)
+
+## What is This Problem?
+
+We are given:
+- A DNA sequence string `S` of length `N` containing characters `A`, `C`, `G`, `T`
+- Each nucleotide has an **impact factor**: `A=1`, `C=2`, `G=3`, `T=4`
+- `M` queries, each defined by two integers `P` and `Q` (`0 ≤ P ≤ Q < N`)
+
+For each query, we need to find the **minimal impact factor** among nucleotides `S[P]` to `S[Q]` (inclusive).
+
+Return an array of `M` integers where each element is the answer to the corresponding query.
+
+## Why This Works
+
+A naive solution would scan each substring `S[P..Q]` for every query, costing O(N×M) in the worst case.
+
+The key insight is using **prefix sums independently for each nucleotide**:
+- For each nucleotide type (A, C, G, T), we can precompute a prefix sum array
+- The prefix sum at index `i` tells us how many of that nucleotide appear in `S[0..i-1]`
+- To check if a nucleotide appears in range `[P, Q]`, compare counts:
+  - `count_in_range = prefix[Q+1] - prefix[P]`
+  - If this difference is > 0, the nucleotide exists in the range
+- Since we want the minimal impact factor, we simply check `A` first, then `C`, then `G`, finally `T`
+- As soon as we find one that appears, that's our answer for that query
+
+This transforms O(N×M) into O(N + M) by precomputing the 4 prefix sums in O(N), then answering each query in O(1).
+
+## Algorithm Steps
+
+**Precomputation (O(N)):**
+1. Create 4 arrays: `prefixA`, `prefixC`, `prefixG`, `prefixT`, each of size `N+1`
+2. Initialize all `prefixX[0] = 0`
+3. For `i = 0` to `N-1`:
+   - Copy previous counts: `prefixA[i+1] = prefixA[i]`, etc.
+   - Increment the count for `S[i]`: e.g., if `S[i] == 'A'`, then `prefixA[i+1]++`
+
+**Query Processing (O(M)):**
+4. For each query `(P, Q)`:
+   - Check if `A` appears: if `prefixA[Q+1] - prefixA[P] > 0` → answer = 1
+   - Else check if `C` appears: if `prefixC[Q+1] - prefixC[P] > 0` → answer = 2
+   - Else check if `G` appears: if `prefixG[Q+1] - prefixG[P] > 0` → answer = 3
+   - Else must be `T` → answer = 4
+5. Collect all answers and return
+
+## Visualization
+
+Let's trace through a small example: `S = "CAGCCTA"` (length 7)
+
+We'll build prefix arrays (showing index i and prefix value at i+1):
+
+```
+Index:  0   1   2   3   4   5   6
+S:      C   A   G   C   C   T   A
+
+prefixA: [0]                         (start)
+         ↓  A[0]=C → unchanged
+         [0, 0]                      A count up to index 1
+         ↓  A[1]=A → increment
+         [0, 0, 1]
+         ↓  A[2]=G → unchanged
+         [0, 0, 1, 1]
+         ↓  A[3]=C → unchanged
+         [0, 0, 1, 1, 1]
+         ↓  A[4]=C → unchanged
+         [0, 0, 1, 1, 1, 1]
+         ↓  A[5]=T → unchanged
+         [0, 0, 1, 1, 1, 1, 1]
+         ↓  A[6]=A → increment
+         [0, 0, 1, 1, 1, 1, 1, 2]
+
+Final prefixA: [0, 0, 1, 1, 1, 1, 1, 2]
+```
+
+Similarly, `prefixC` would be: `[0, 1, 1, 1, 2, 3, 3, 3]`  
+`prefixG`: `[0, 0, 0, 1, 1, 1, 1, 1]`  
+`prefixT`: `[0, 0, 0, 0, 0, 0, 1, 1]`
+
+**Query example:** `P=2, Q=4` → substring "GCC"
+
+- Check A: `prefixA[5] - prefixA[2]` = `1 - 1 = 0` → no A
+- Check C: `prefixC[5] - prefixC[2]` = `3 - 1 = 2` → C exists! Answer = 2
+
+**Query example:** `P=5, Q=6` → substring "TA"
+
+- Check A: `prefixA[7] - prefixA[5]` = `2 - 1 = 1` → A exists! Answer = 1
+- (We stop as soon as we find the minimal nucleotide)
+
+## Key Pattern
+
+**Multiple Independent Prefix Sums**: When you need to answer queries about the **existence** or **count** of specific categories within ranges, precompute separate prefix sums for each category. Then answer queries by comparing differences between prefix endpoints.
+
+## When to Use This Pattern
+
+Use this approach when:
+- You have a finite set of **categories** (like nucleotide types, fixed character sets, small value ranges)
+- You need to answer many queries about which categories appear in a given range `[P, Q]`
+- You need to find the **minimal/maximal** category present in a range
+- The number of categories is small and constant (like 4 nucleotides), making O(K×N) precomputation acceptable
+- Queries are frequent and O(1) per query is required
+
+**Classic applications:**
+- Range minimum/maximum queries over small discrete sets
+- Checking category membership in intervals
+- Multiple counting queries on subarrays
+- Anytime you need to know "what appears in this range" from a fixed vocabulary
+
+## Solution
+
+```javascript
+function solution(S, P, Q) {
+    const N = S.length
+    const M = P.length
+    
+    // Initialize prefix sum arrays (size N+1)
+    const prefixA = new Array(N + 1).fill(0)
+    const prefixC = new Array(N + 1).fill(0)
+    const prefixG = new Array(N + 1).fill(0)
+    const prefixT = new Array(N + 1).fill(0)
+    
+    // Build prefix sums
+    for (let i = 0; i < N; i++) {
+        prefixA[i + 1] = prefixA[i]
+        prefixC[i + 1] = prefixC[i]
+        prefixG[i + 1] = prefixG[i]
+        prefixT[i + 1] = prefixT[i]
+        
+        switch (S[i]) {
+            case 'A':
+                prefixA[i + 1]++
+                break
+            case 'C':
+                prefixC[i + 1]++
+                break
+            case 'G':
+                prefixG[i + 1]++
+                break
+            case 'T':
+                prefixT[i + 1]++
+                break
+        }
+    }
+    
+    // Answer queries
+    const result = new Array(M)
+    for (let k = 0; k < M; k++) {
+        const start = P[k]
+        const end = Q[k] + 1  // prefix sum is exclusive at end
+        
+        if (prefixA[end] - prefixA[start] > 0) {
+            result[k] = 1
+        } else if (prefixC[end] - prefixC[start] > 0) {
+            result[k] = 2
+        } else if (prefixG[end] - prefixG[start] > 0) {
+            result[k] = 3
+        } else {
+            result[k] = 4
+        }
+    }
+    
+    return result
+}
+```
